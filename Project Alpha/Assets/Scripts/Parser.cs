@@ -15,6 +15,8 @@ public class Parser : MonoBehaviour
 
     List<List<PlayData>> playDataList = new List<List<PlayData>>();
 
+    private AudioClip audioClip;
+
     private float audioPlayTime = 0;
     private float tempTime = 0;
 
@@ -37,6 +39,7 @@ public class Parser : MonoBehaviour
         string[] infos = source.Split(',');
         GamePlayManager.Instance.bpm = float.Parse(infos[0]);
         float audioPreTime = float.Parse(infos[1]);
+        //audioClip = Resources.Load(infos[2], typeof(AudioClip)) as AudioClip;
 
         source = sr.ReadLine();
 
@@ -165,6 +168,7 @@ public class Parser : MonoBehaviour
 
     public IEnumerator PlayAudioCoroutine(float audioPreTime)
     {
+        //audioSource.clip = audioClip;
         audioSource.mute = true;
         audioSource.Play();
         yield return new WaitForSeconds(audioPreTime);

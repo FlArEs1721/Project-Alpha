@@ -116,12 +116,12 @@ public class GameFrame : MonoBehaviour
                             {
                                 if (note.noteType == NoteType.Touch && IsTouchedNote(NoteType.Touch, note, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
-                                if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
+                                if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
                             }
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList1.Count; j++)
-                                if (touchedNoteList1[targetIndex1].yPosition > touchedNoteList1[j].yPosition)
+                                if (touchedNoteList1[j].yPosition >= -JudgementLineWidth && touchedNoteList1[targetIndex1].yPosition > touchedNoteList1[j].yPosition)
                                     targetIndex1 = j;
                             if (touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType) == JudgementType.Ignore) break;
                             // 노트 처리
@@ -135,19 +135,17 @@ public class GameFrame : MonoBehaviour
                         // 슬라이드 노트 처리
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                        case TouchPhase.Canceled:
-                        case TouchPhase.Ended:
                             List<Note> touchedNoteList2 = new List<Note>();
                             int targetIndex2 = 0;
                             // 터치 가능한 노트를 리스트에 담음
                             foreach (Note note in noteList)
                             {
-                                if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
+                                if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
                                     touchedNoteList2.Add(note);
                             }
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList2.Count; j++)
-                                if (touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
+                                if (touchedNoteList2[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
                                     targetIndex2 = j;
                             if (touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType) == JudgementType.Ignore) break;
                             // 노트 처리
@@ -268,19 +266,22 @@ public class GameFrame : MonoBehaviour
 
         while (true)
         {
-            if (tempTime <= time)
+            if (!GamePlayManager.Instance.isPaused)
             {
-                Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
-                this.frameSize = temp;
+                if (tempTime <= time)
+                {
+                    Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
+                    this.frameSize = temp;
 
-                tempTime += Time.deltaTime;
-            }
-            else
-            {
-                this.frameSize = destination;
-                isCreating = false;
+                    tempTime += Time.deltaTime;
+                }
+                else
+                {
+                    this.frameSize = destination;
+                    isCreating = false;
 
-                StopCoroutine(createFrameCoroutine);
+                    StopCoroutine(createFrameCoroutine);
+                }
             }
             yield return null;
         }
@@ -322,19 +323,22 @@ public class GameFrame : MonoBehaviour
 
         while (true)
         {
-            if (tempTime <= time)
+            if (!GamePlayManager.Instance.isPaused)
             {
-                Vector2 temp = Vector2.Lerp(originalPosition, destination, Utility.GetLerp(lerp, tempTime, time));
-                this.position = temp;
+                if (tempTime <= time)
+                {
+                    Vector2 temp = Vector2.Lerp(originalPosition, destination, Utility.GetLerp(lerp, tempTime, time));
+                    this.position = temp;
 
-                tempTime += Time.deltaTime;
-            }
-            else
-            {
-                this.position = destination;
-                moveFrameEnabled = false;
+                    tempTime += Time.deltaTime;
+                }
+                else
+                {
+                    this.position = destination;
+                    moveFrameEnabled = false;
 
-                StopCoroutine(moveFrameCoroutine);
+                    StopCoroutine(moveFrameCoroutine);
+                }
             }
             yield return null;
         }
@@ -373,21 +377,24 @@ public class GameFrame : MonoBehaviour
 
         while (true)
         {
-            if (tempTime <= time)
+            if (!GamePlayManager.Instance.isPaused)
             {
-                float temp = Mathf.Lerp(originalRotation, destination, Utility.GetLerp(lerp, tempTime, time));
-                this.rotation = temp;
+                if (tempTime <= time)
+                {
+                    float temp = Mathf.Lerp(originalRotation, destination, Utility.GetLerp(lerp, tempTime, time));
+                    this.rotation = temp;
 
-                //Debug.Log(Utility.GetLerp(lerp, tempTime, time) + ", " + temp);
+                    //Debug.Log(Utility.GetLerp(lerp, tempTime, time) + ", " + temp);
 
-                tempTime += Time.deltaTime;
-            }
-            else
-            {
-                this.rotation = destination;
-                rotateFrameEnabled = false;
+                    tempTime += Time.deltaTime;
+                }
+                else
+                {
+                    this.rotation = destination;
+                    rotateFrameEnabled = false;
 
-                StopCoroutine(rotateFrameCoroutine);
+                    StopCoroutine(rotateFrameCoroutine);
+                }
             }
             yield return null;
         }
@@ -437,21 +444,24 @@ public class GameFrame : MonoBehaviour
 
         while (true)
         {
-            preFrameSize = this.frameSize;
-            if (tempTime <= time)
+            if (!GamePlayManager.Instance.isPaused)
             {
-                Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
-                this.frameSize = temp;
+                preFrameSize = this.frameSize;
+                if (tempTime <= time)
+                {
+                    Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
+                    this.frameSize = temp;
 
-                tempTime += Time.deltaTime;
-            }
-            else
-            {
-                this.frameSize = destination;
-                resizeFrameEnabled = false;
-                preFrameSize = destination;
-                if (destination.x == 0 && destination.y == 0) DestroyFrame();
-                break;
+                    tempTime += Time.deltaTime;
+                }
+                else
+                {
+                    this.frameSize = destination;
+                    resizeFrameEnabled = false;
+                    preFrameSize = destination;
+                    if (destination.x == 0 && destination.y == 0) DestroyFrame();
+                    break;
+                }
             }
             yield return null;
         }

@@ -152,7 +152,7 @@ public class Note : MonoBehaviour
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < -150f)
+            if (yPosition < -100f)
             {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(this);
@@ -192,9 +192,9 @@ public class Note : MonoBehaviour
                 else if (mistakeTime > (5f / 8f) * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
             case NoteType.Slide:
-                // 오차 시간이 (1.5)x 이상인 경우 해당 입력은 무시
+                // 오차 시간이 (0.5)x 이상인 경우 해당 입력은 무시
                 // 아니면 Perfect
-                if (mistakeTime > 1.5 * x) return JudgementType.Ignore;
+                if (mistakeTime > 0.8 * x) return JudgementType.Ignore;
                 else return JudgementType.Perfect;
         }
 

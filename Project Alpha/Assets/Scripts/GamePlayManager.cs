@@ -14,7 +14,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public const float NoteSpeedConstant = 160f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeX = 7f;
+    public const float NoteTouchExtraSizeX = 15f;
 
     [HideInInspector]
     public const float NoteTouchExtraSizeY = 100f;
@@ -40,6 +40,9 @@ public class GamePlayManager : Singleton<GamePlayManager>
 
     [HideInInspector]
     public List<int> comboCountList = new List<int>();
+
+    [HideInInspector]
+    public bool isPaused = false;
 
     [HideInInspector]
     public List<GameObject> touchNotePool = new List<GameObject>();
