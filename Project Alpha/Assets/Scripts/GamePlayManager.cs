@@ -14,10 +14,10 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public const float NoteSpeedConstant = 160f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeX = 15f;
+    public const float NoteTouchExtraSizeX = 13f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeY = 100f;
+    public const float NoteTouchExtraSizeY = 70f;
 
     [HideInInspector]
     //public float score = 0;

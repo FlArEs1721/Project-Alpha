@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Parser : MonoBehaviour
 {
@@ -20,14 +21,22 @@ public class Parser : MonoBehaviour
     private float audioPlayTime = 0;
     private float tempTime = 0;
 
+    private bool isScoreFinished = false;
+
     private void Start()
     {
+        SendInfo sendSongInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
+        scoreData = Resources.Load(sendSongInfo.songTitle + "_" + sendSongInfo.songDifficulty, typeof(TextAsset)) as TextAsset;
+        Destroy(sendSongInfo.gameObject);
         InitiateScore();
     }
 
     private void Update()
     {
         audioPlayTime = audioSource.time + tempTime;
+
+        if (!audioSource.isPlaying && isScoreFinished)
+            SceneManager.LoadScene("Result");
     }
 
     public void InitiateScore()
@@ -45,6 +54,9 @@ public class Parser : MonoBehaviour
 
         for (int i = 0; source != null; i++)
         {
+            // @로 시작하는 줄은 무시 (주석)
+            if (source.Substring(0, 1).Equals("@")) continue;
+
             playDataList.Add(new List<PlayData>());
 
             string[] values = source.Split('/');
@@ -224,6 +236,8 @@ public class Parser : MonoBehaviour
 
             yield return null;
         }
+
+        isScoreFinished = true;
 
         Debug.Log(GamePlayManager.Instance.GetScore());
     }
