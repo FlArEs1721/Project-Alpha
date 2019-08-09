@@ -13,6 +13,10 @@ public class SongSelectManager : MonoBehaviour
 
     [Space]
     public GameObject songPackSelectPanel;
+    public Text songTitleText;
+    public Text songComposerText;
+
+    private SendInfo sendObj;
 
     private int currentPackIndex = 0;
     private int currentSongIndex = 0;
@@ -21,11 +25,24 @@ public class SongSelectManager : MonoBehaviour
     private void Start()
     {
         Initiate();
-        GoToPackSelect();
+        if (!sendObj.songPlayed)
+        {
+            GoToPackSelect();
+        }
+        else
+        {
+            currentPackIndex = sendObj.currentPackIndex;
+            currentSongIndex = sendObj.currentSongIndex;
+            currentDifficulty = sendObj.currentDifficulty;
+
+            SelectPack(currentPackIndex, currentSongIndex);
+        }
     }
 
     private void Initiate()
     {
+        sendObj = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
+
         // 음악팩과 음악들의 정보를 받아옴
         StringReader sr = new StringReader(songList.text);
         string source = sr.ReadLine();
@@ -45,10 +62,17 @@ public class SongSelectManager : MonoBehaviour
         }
     }
 
-    public void SelectPack(int packIndex)
+    public void SelectPack(int packIndex, int songIndex = 0)
     {
-        currentSongIndex = 0;
+        currentSongIndex = songIndex;
         songPackSelectPanel.SetActive(false);
+        RefreshSongInfo(packIndex, songIndex);
+    }
+
+    private void RefreshSongInfo(int packIndex, int songIndex)
+    {
+        songTitleText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].songTitle;
+        songComposerText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].composer;
     }
 
     public void GoToPackSelect()
@@ -66,7 +90,10 @@ public class SongSelectManager : MonoBehaviour
         for (int i = 0; i < SongPack.songPackDictionary.Count; i++)
         {
             GameObject songPackButton = CreateSongPackButton(i);
+            Text packNameText = songPackButton.GetComponentInChildren<Text>();
+
             songPackButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300 + 300 * i, 0);
+            packNameText.text = SongPack.songPackDictionary[i].packName;
         }
     }
 
@@ -84,20 +111,26 @@ public class SongSelectManager : MonoBehaviour
     {
         currentSongIndex++;
         if (currentSongIndex >= SongPack.songPackDictionary[currentPackIndex].songDictionary.Count) currentSongIndex = 0;
+
+        RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 
     public void PreviousSong()
     {
         currentSongIndex--;
         if (currentSongIndex < 0) currentSongIndex = SongPack.songPackDictionary[currentPackIndex].songDictionary.Count - 1;
+
+        RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 
     public void SelectSong()
     {
-        GameObject sendObj = GameObject.Find("SendInfoObject");
-        //sendObj.name = "SendInfoObject";
-        sendObj.GetComponent<SendInfo>().songTitle = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].songTitle;
-        sendObj.GetComponent<SendInfo>().songDifficulty = currentDifficulty.ToString();
+        sendObj.songTitle = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].songTitle;
+        sendObj.songDifficulty = currentDifficulty.ToString();
+        sendObj.currentPackIndex = currentPackIndex;
+        sendObj.currentSongIndex = currentSongIndex;
+        sendObj.currentDifficulty = currentDifficulty;
+        sendObj.songPlayed = true;
         SceneManager.LoadScene("Game");
     }
 }
