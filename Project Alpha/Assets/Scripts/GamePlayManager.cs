@@ -49,18 +49,18 @@ public class GamePlayManager : Singleton<GamePlayManager>
     [HideInInspector]
     public List<GameObject> slideNotePool = new List<GameObject>();
 
-    public void CreateNote(NoteType noteType, GameObject touchNotePrefab, GameObject slideNotePrefab)
+    public void CreateNote(NoteType noteType, GameObject prefab)
     {
         GameObject note = null;
         switch (noteType)
         {
             case NoteType.Touch:
-                note = Instantiate(touchNotePrefab, this.transform);
+                note = Instantiate(prefab, this.transform);
                 note.SetActive(false);
                 touchNotePool.Add(note);
                 break;
             case NoteType.Slide:
-                note = Instantiate(slideNotePrefab, this.transform);
+                note = Instantiate(prefab, this.transform);
                 note.SetActive(false);
                 slideNotePool.Add(note);
                 break;

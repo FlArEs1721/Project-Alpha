@@ -64,6 +64,8 @@ public class SongSelectManager : MonoBehaviour
 
     public void SelectPack(int packIndex, int songIndex = 0)
     {
+        if (SongPack.songPackDictionary[packIndex].songDictionary.Count <= 0) return;
+
         currentSongIndex = songIndex;
         songPackSelectPanel.SetActive(false);
         RefreshSongInfo(packIndex, songIndex);

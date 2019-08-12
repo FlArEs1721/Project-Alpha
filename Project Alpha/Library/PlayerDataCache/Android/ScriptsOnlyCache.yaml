@@ -443,7 +443,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 581a23ead7027beee7273bd84a18c08f
+      Hash: c9da5d445967dfa246edbf6300a5151a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SendInfo
@@ -755,13 +755,13 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: ded4543a1f0758dc76e5dfe0660c16e3
+      Hash: 1cdff973a11c3d9339e013196d70726a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Note
   - hash:
       serializedVersion: 2
-      Hash: 42c4fd2ba5137565673d0e2475d37bec
+      Hash: 56e7a702a3227d8278c0790bf6720fe1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SongSelectManager
@@ -881,7 +881,7 @@ ScriptsOnlyBuild:
     className: TMP_ColorGradient
   - hash:
       serializedVersion: 2
-      Hash: 77347303e50aeb04a8564b17e8b63f3b
+      Hash: 6e059ca3687e6260271ee44ede710fd1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Parser

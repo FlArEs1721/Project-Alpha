@@ -114,18 +114,23 @@ public class GameFrame : MonoBehaviour
                             // 터치 가능한 노트를 리스트에 담음
                             foreach (Note note in noteList)
                             {
+                                // 터치 노트
                                 if (note.noteType == NoteType.Touch && IsTouchedNote(NoteType.Touch, note, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
+                                // 슬라이드 노트
+                                /*
                                 if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
+                                    */
                             }
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList1.Count; j++)
                                 if (touchedNoteList1[j].yPosition >= -JudgementLineWidth && touchedNoteList1[targetIndex1].yPosition > touchedNoteList1[j].yPosition)
                                     targetIndex1 = j;
-                            if (touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType) == JudgementType.Ignore) break;
                             // 노트 처리
-                            ProcessNote(touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType));
+                            JudgementType judgement1 = touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType);
+                            if (judgement1 == JudgementType.Ignore) break;
+                            ProcessNote(judgement1);
                             // 처리 완료된 노트는 삭제
                             //Destroy(touchedNoteList[targetIndex].gameObject);
                             noteList.Remove(touchedNoteList1[targetIndex1]);
@@ -147,13 +152,15 @@ public class GameFrame : MonoBehaviour
                             for (int j = 1; j < touchedNoteList2.Count; j++)
                                 if (touchedNoteList2[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
                                     targetIndex2 = j;
-                            if (touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType) == JudgementType.Ignore) break;
                             // 노트 처리
-                            ProcessNote(touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType));
+                            JudgementType judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
+                            if (judgement2 == JudgementType.Ignore) break;
+                            ProcessNote(judgement2);
                             // 처리 완료된 노트는 삭제
                             //Destroy(touchedNoteList[targetIndex].gameObject);
-                            noteList.Remove(touchedNoteList2[targetIndex2]);
-                            touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                            //noteList.Remove(touchedNoteList2[targetIndex2]);
+                            //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                            touchedNoteList2[targetIndex2].isProcessed = true;
                             break;
                     }
                 }
@@ -530,7 +537,12 @@ public enum NoteType
     /// <summary>
     /// 슬라이드 노트
     /// </summary>
-    Slide
+    Slide,
+    /// <summary>
+    /// 롱 노트
+    /// </summary>
+    Long
+        // TODO: 롱노트 추가
 }
 
 /// <summary>

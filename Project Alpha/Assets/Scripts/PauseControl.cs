@@ -8,9 +8,13 @@ public class PauseControl : MonoBehaviour
     public GameObject pausePanel;
     public AudioSource audioSource;
 
+    private float fixedDeltaTime = 0;
+
     public void Pause()
     {
         Time.timeScale = 0;
+        fixedDeltaTime = Time.fixedDeltaTime;
+        Time.fixedDeltaTime = float.PositiveInfinity;
         audioSource.Pause();
         pausePanel.SetActive(true);
     }
@@ -20,6 +24,7 @@ public class PauseControl : MonoBehaviour
         pausePanel.SetActive(false);
         audioSource.Play();
         Time.timeScale = 1;
+        Time.fixedDeltaTime = fixedDeltaTime;
     }
 
     public void Retry()

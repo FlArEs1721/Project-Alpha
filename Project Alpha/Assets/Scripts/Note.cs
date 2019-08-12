@@ -29,6 +29,9 @@ public class Note : MonoBehaviour
     [HideInInspector]
     public bool isCreated = false;
 
+    [HideInInspector]
+    public bool isProcessed = false;
+
     /// <summary>
     /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
     /// </summary>
@@ -160,6 +163,12 @@ public class Note : MonoBehaviour
                 gameObject.SetActive(false);
             }
 
+            if (yPosition <= 5f && isProcessed)
+            {
+                gameFrame.noteList.Remove(this);
+                gameObject.SetActive(false);
+            }
+
             // 노트 낙하
             yPosition -= GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed * Time.deltaTime;
         }
@@ -192,13 +201,19 @@ public class Note : MonoBehaviour
                 else if (mistakeTime > (5f / 8f) * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
             case NoteType.Slide:
-                // 오차 시간이 (0.5)x 이상인 경우 해당 입력은 무시
+                // 오차 시간이 (0.75)x 이상인 경우 해당 입력은 무시
                 // 아니면 Perfect
-                if (mistakeTime > 0.8 * x) return JudgementType.Ignore;
+                if (mistakeTime > 0.75f * x) return JudgementType.Ignore;
                 else return JudgementType.Perfect;
         }
 
         return JudgementType.Ignore;
+    }
+
+    public JudgementType JudgementPerfect()
+    {
+        if (Mathf.Abs(yPosition) < 2) return JudgementType.Perfect;
+        else return JudgementType.Ignore;
     }
 }
 
