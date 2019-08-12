@@ -21,10 +21,12 @@ public class SendInfo : MonoBehaviour
 
     private void Start()
     {
-        if (GameObject.Find("SendInfoObject") != null)
+        /*
+        if (GameObject.FindGameObjectsWithTag("GameController").Length > 1)
         {
             Destroy(gameObject);
         }
+        */
 
         DontDestroyOnLoad(gameObject);
         gameObject.name = "SendInfoObject";

@@ -31,6 +31,7 @@ public class PauseControl : MonoBehaviour
     {
         StopAllCoroutines();
         Time.timeScale = 1;
+        Time.fixedDeltaTime = fixedDeltaTime;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -39,6 +40,7 @@ public class PauseControl : MonoBehaviour
         // TODO: 메인메뉴 만들기 & 연결
         StopAllCoroutines();
         Time.timeScale = 1;
+        Time.fixedDeltaTime = fixedDeltaTime;
         SceneManager.LoadScene("SongSelect");
     }
 }

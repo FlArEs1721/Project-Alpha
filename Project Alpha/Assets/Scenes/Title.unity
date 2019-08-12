@@ -132,6 +132,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SendInfoObject_Init
       objectReference: {fileID: 0}
+    - target: {fileID: 2360918832899880191, guid: a4cd777ab47ad5e41a775dca16cf311b,
+        type: 3}
+      propertyPath: m_TagString
+      value: GameController
+      objectReference: {fileID: 0}
     - target: {fileID: 2360918832899880189, guid: a4cd777ab47ad5e41a775dca16cf311b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -351,7 +356,7 @@ GameObject:
   - component: {fileID: 691121377}
   m_Layer: 0
   m_Name: SendInfoObject_Init
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -371,6 +376,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   songTitle: 
   songDifficulty: 
+  currentPackIndex: 0
+  currentSongIndex: 0
+  currentDifficulty: 2
+  songPlayed: 0
 --- !u!4 &691121378
 Transform:
   m_ObjectHideFlags: 0

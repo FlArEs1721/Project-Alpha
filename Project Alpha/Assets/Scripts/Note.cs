@@ -8,13 +8,15 @@ public class Note : MonoBehaviour
     /// <summary>
     /// 노트 타입
     /// </summary>
-    [HideInInspector]
     public NoteType noteType;
 
     /// <summary>
     /// 노트 크기
     /// </summary>
-    private float noteXSize;
+    [HideInInspector]
+    public float noteXSize;
+    [HideInInspector]
+    public float noteYSize;
     /// <summary>
     /// 노트의 생성 위치 x좌표
     /// </summary>
@@ -25,6 +27,11 @@ public class Note : MonoBehaviour
     /// </summary>
     [HideInInspector]
     public float yPosition;
+    /// <summary>
+    /// (롱노트에만 해당) 노트의 박자 단위 길이
+    /// </summary>
+    [HideInInspector]
+    public float beatLength;
 
     [HideInInspector]
     public bool isCreated = false;
@@ -32,12 +39,16 @@ public class Note : MonoBehaviour
     [HideInInspector]
     public bool isProcessed = false;
 
+    [HideInInspector]
+    public bool isTouching = false;
+
     /// <summary>
     /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
     /// </summary>
     public void Initiate()
     {
         noteXSize = gameFrame.noteXSize;
+        noteYSize = (beatLength == 0) ? GameFrame.JudgementLineWidth : beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         yPosition = 800f;
         gameFrame.noteList.Add(this);
         isCreated = true;
@@ -107,15 +118,15 @@ public class Note : MonoBehaviour
             }
 
             // y좌표 & 크기 조정
-            if (yPosition + (GameFrame.JudgementLineWidth / 2) > gameFrame.frameSize.y && yPosition - (GameFrame.JudgementLineWidth / 2) < 0)
+            if (yPosition + noteYSize > gameFrame.frameSize.y && yPosition < 0)
             {
                 // 노트의 양쪽 모두 게임프레임을 벗어날 경우
                 this.transform.localPosition = new Vector3(this.transform.localPosition.x, gameFrame.frameSize.y / 2, 0);
                 this.transform.localScale = new Vector3(this.transform.localScale.x, gameFrame.frameSize.y, 1);
             }
-            else if (yPosition + (GameFrame.JudgementLineWidth / 2) > gameFrame.frameSize.y)
+            else if (yPosition + noteYSize > gameFrame.frameSize.y)
             {
-                if (yPosition - (GameFrame.JudgementLineWidth / 2) > gameFrame.frameSize.y)
+                if (yPosition > gameFrame.frameSize.y)
                 {
                     // 노트가 위쪽으로 게임프레임을 전부 벗어난 경우
                     this.transform.localPosition = new Vector3(this.transform.localPosition.x, gameFrame.frameSize.y, 0);
@@ -124,13 +135,13 @@ public class Note : MonoBehaviour
                 else
                 {
                     // 노트의 위쪽만 게임프레임을 벗어날 경우
-                    this.transform.localPosition = new Vector3(this.transform.localPosition.x, (gameFrame.frameSize.y + (yPosition - (GameFrame.JudgementLineWidth / 2))) / 2, 0);
-                    this.transform.localScale = new Vector3(this.transform.localScale.x, gameFrame.frameSize.y - (yPosition - (GameFrame.JudgementLineWidth / 2)), 1);
+                    this.transform.localPosition = new Vector3(this.transform.localPosition.x, (gameFrame.frameSize.y + yPosition) / 2, 0);
+                    this.transform.localScale = new Vector3(this.transform.localScale.x, gameFrame.frameSize.y - yPosition, 1);
                 }
             }
-            else if (yPosition - (GameFrame.JudgementLineWidth / 2) < 0)
+            else if (yPosition < 0)
             {
-                if (yPosition + (GameFrame.JudgementLineWidth / 2) < 0)
+                if (yPosition + noteYSize < 0)
                 {
                     // 노트가 아래쪽으로 게임프레임을 전부 벗어났을 경우
                     this.transform.localPosition = new Vector3(this.transform.localPosition.x, 0, 0);
@@ -139,23 +150,23 @@ public class Note : MonoBehaviour
                 else
                 {
                     // 노트의 아래쪽만 게임프레임을 벗어날 경우
-                    this.transform.localPosition = new Vector3(this.transform.localPosition.x, (yPosition + (GameFrame.JudgementLineWidth / 2)) / 2, 0);
-                    this.transform.localScale = new Vector3(this.transform.localScale.x, yPosition + (GameFrame.JudgementLineWidth / 2), 1);
+                    this.transform.localPosition = new Vector3(this.transform.localPosition.x, (yPosition + noteYSize) / 2, 0);
+                    this.transform.localScale = new Vector3(this.transform.localScale.x, yPosition + noteYSize, 1);
                 }
             }
             else
             {
                 // 노트가 게임프레임을 벗어나지 않을 경우
                 // 기존 위치 그대로 적용
-                this.transform.localPosition = new Vector3(this.transform.localPosition.x, yPosition, 0);
+                this.transform.localPosition = new Vector3(this.transform.localPosition.x, yPosition + (noteYSize / 2), 0);
                 // 기존 크기 그대로 적용
-                this.transform.localScale = new Vector3(this.transform.localScale.x, GameFrame.JudgementLineWidth, 1);
+                this.transform.localScale = new Vector3(this.transform.localScale.x, noteYSize, 1);
             }
 
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < -100f)
+            if (yPosition < -100f && !isTouching)
             {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(this);
@@ -204,6 +215,16 @@ public class Note : MonoBehaviour
                 // 오차 시간이 (0.75)x 이상인 경우 해당 입력은 무시
                 // 아니면 Perfect
                 if (mistakeTime > 0.75f * x) return JudgementType.Ignore;
+                else return JudgementType.Perfect;
+            case NoteType.Long:
+                // 오차 시간이 (5/8)x 이하인 경우 Perfect
+                // 오차 시간이 (2)x 이하인 경우 Normal
+                // 오차 시간이 그 초과인 경우 Miss
+                // 오차 시간이 (4)x 이상인 경우 해당 입력은 무시
+                //float absYPosition = Mathf.Abs(yPosition);
+                if (mistakeTime > 4f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 2f * x) return JudgementType.Miss;
+                else if (mistakeTime > (5f / 8f) * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
         }
 

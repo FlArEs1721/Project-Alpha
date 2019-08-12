@@ -656,6 +656,8 @@ MonoBehaviour:
     type: 3}
   slideNotePrefab: {fileID: 6373128903292374975, guid: ac2160585e43cf74795eb130d1979eaf,
     type: 3}
+  longNotePrefab: {fileID: 8248938337902962763, guid: a755aff1f5b8fe547a80af4b8a5cba07,
+    type: 3}
   scoreData: {fileID: 4900000, guid: bb7d16f5250829e47ac1d22ae607ae83, type: 3}
 --- !u!82 &686551554
 AudioSource:

@@ -48,6 +48,8 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public List<GameObject> touchNotePool = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> slideNotePool = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> longNotePool = new List<GameObject>();
 
     public void CreateNote(NoteType noteType, GameObject prefab)
     {
@@ -63,6 +65,11 @@ public class GamePlayManager : Singleton<GamePlayManager>
                 note = Instantiate(prefab, this.transform);
                 note.SetActive(false);
                 slideNotePool.Add(note);
+                break;
+            case NoteType.Long:
+                note = Instantiate(prefab, this.transform);
+                note.SetActive(false);
+                longNotePool.Add(note);
                 break;
         }
     }
@@ -81,6 +88,12 @@ public class GamePlayManager : Singleton<GamePlayManager>
             case NoteType.Slide:
                 note = slideNotePool[0];
                 slideNotePool.RemoveAt(0);
+                note.transform.SetParent(noteLayer.transform);
+                note.SetActive(true);
+                return note;
+            case NoteType.Long:
+                note = longNotePool[0];
+                longNotePool.RemoveAt(0);
                 note.transform.SetParent(noteLayer.transform);
                 note.SetActive(true);
                 return note;

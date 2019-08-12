@@ -24,11 +24,13 @@ public class Parser : MonoBehaviour
 
     private bool isScoreFinished = false;
 
+    private int i = 0;
+
     private void Start()
     {
         SendInfo sendSongInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
         scoreData = Resources.Load(sendSongInfo.songTitle + "_" + sendSongInfo.songDifficulty, typeof(TextAsset)) as TextAsset;
-        Destroy(sendSongInfo.gameObject);
+        //Destroy(sendSongInfo.gameObject);
         InitiateScore();
     }
 
@@ -50,6 +52,9 @@ public class Parser : MonoBehaviour
         GamePlayManager.Instance.bpm = float.Parse(infos[0]);
         float audioPreTime = float.Parse(infos[1]);
         //audioClip = Resources.Load(infos[2], typeof(AudioClip)) as AudioClip;
+
+        // 32분음표 단위
+        Time.fixedDeltaTime = (60 / GamePlayManager.Instance.bpm) / 8;
 
         source = sr.ReadLine();
 
@@ -155,6 +160,8 @@ public class Parser : MonoBehaviour
                                     break;
                                 case 2:
                                     GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab);
+                                    // 박자단위 길이
+                                    playDataList[i][j].data[3] = float.Parse(tempArray[4]);
                                     break;
                             }
 
@@ -178,11 +185,10 @@ public class Parser : MonoBehaviour
 
         //Debug.Log(GamePlayManager.Instance.maxNoteCount);
 
-        // 32분음표 단위
-        Time.fixedDeltaTime = (60 / GamePlayManager.Instance.bpm) / 8;
-
         StartCoroutine(PlayAudioCoroutine(audioPreTime));
         //StartCoroutine(PlayScoreCoroutine(audioPreTime));
+
+        i = 0;
     }
 
     public IEnumerator PlayAudioCoroutine(float audioPreTime)
@@ -197,9 +203,9 @@ public class Parser : MonoBehaviour
         audioSource.Play();
     }
 
-    int i = 0;
     private void FixedUpdate()
     {
+        //Debug.Log(i);
         if (i >= playDataList.Count)
         {
             isScoreFinished = true;
@@ -215,7 +221,18 @@ public class Parser : MonoBehaviour
                     case PlayType.None:
                         break;
                     case PlayType.CreateNote:
-                        gameFrameList[(int)temp.data[0]].CreateNote((NoteType)temp.data[1], temp.data[2]);
+                        switch (temp.data[1])
+                        {
+                            // 단타노트, 슬라이드 노트
+                            case 0:
+                            case 1:
+                                gameFrameList[(int)temp.data[0]].CreateNote((NoteType)temp.data[1], temp.data[2]);
+                                break;
+                            // 롱노트
+                            case 2:
+                                gameFrameList[(int)temp.data[0]].CreateNote((NoteType)temp.data[1], temp.data[2], temp.data[3]);
+                                break;
+                        }
                         break;
                     case PlayType.CreateFrame:
                         if (!gameFrameList.ContainsKey((int)temp.data[0]))
