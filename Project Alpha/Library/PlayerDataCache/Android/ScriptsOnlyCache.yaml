@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - ComboTextControl
     - FrameCreateTest
     - GameFrame
+    - InitializeManager
     - Note
     - Parser
     - PauseControl
@@ -89,6 +90,31 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 224
       Script: {instanceID: 0}
+    Assets/Scenes/Initialize.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9446}
+    - Class: 114
+      Script: {instanceID: 11622}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
     Assets/Scenes/Result.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -166,11 +192,7 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 49
-      Script: {instanceID: 0}
     - Class: 81
-      Script: {instanceID: 0}
-    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -186,8 +208,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 9430}
     - Class: 114
       Script: {instanceID: 9432}
-    - Class: 114
-      Script: {instanceID: 9446}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -903,8 +923,15 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: InitializeManager
   platform: 13
   scenePathNames:
+  - Assets/Scenes/Initialize.unity
   - Assets/Scenes/Title.unity
   - Assets/Scenes/SongSelect.unity
   - Assets/Scenes/Game.unity

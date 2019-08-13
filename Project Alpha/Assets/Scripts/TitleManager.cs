@@ -3,15 +3,24 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
+    private bool canEscape = true;
+    
     private void Update()
     {
+#if UNITY_ANDROID
+        if (Input.GetKeyDown(KeyCode.Escape) && canEscape)
+        {
+            // 앱 종료
+            Application.Quit();
+        }
+
         if (Input.touchCount > 0)
         {
             // 씬 넘어가기
             SceneManager.LoadScene("SongSelect");
         }
-
-#if UNITY_EDITOR
+#endif
+#if UNITY_EDITOR_WIN
         if (Input.GetMouseButtonDown(0))
             SceneManager.LoadScene("SongSelect");
 #endif

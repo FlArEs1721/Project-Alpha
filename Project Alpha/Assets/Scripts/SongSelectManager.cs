@@ -21,6 +21,8 @@ public class SongSelectManager : MonoBehaviour
     private int currentPackIndex = 0;
     private int currentSongIndex = 0;
     private SongDifficulty currentDifficulty = SongDifficulty.Hard;
+
+    private bool canEscape = true;
     
     private void Start()
     {
@@ -37,6 +39,38 @@ public class SongSelectManager : MonoBehaviour
 
             SelectPack(currentPackIndex, currentSongIndex);
         }
+    }
+
+    private void Update()
+    {
+#if UNITY_ANDROID
+        if (Input.GetKeyDown(KeyCode.Escape) && canEscape)
+        {
+            if (songPackSelectPanel.activeSelf)
+            {
+                SceneManager.LoadScene("Title");
+            }
+            else
+            {
+                Initiate();
+                GoToPackSelect();
+            }
+        }
+#endif
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Escape) && canEscape)
+        {
+            if (songPackSelectPanel.activeSelf)
+            {
+                SceneManager.LoadScene("Title");
+            }
+            else
+            {
+                Initiate();
+                GoToPackSelect();
+            }
+        }
+#endif
     }
 
     private void Initiate()
