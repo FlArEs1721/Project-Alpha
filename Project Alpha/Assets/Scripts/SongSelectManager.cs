@@ -15,15 +15,25 @@ public class SongSelectManager : MonoBehaviour
     public GameObject songPackSelectPanel;
     public Text songTitleText;
     public Text songComposerText;
+    public Button difficultyButton;
 
     private SendInfo sendObj;
+    private Text difficultyButtonText;
 
     private int currentPackIndex = 0;
     private int currentSongIndex = 0;
     private SongDifficulty currentDifficulty = SongDifficulty.Hard;
 
+    private readonly Color[] DifficultyNormalColor = new Color[4] { new Color(102f / 255f, 1, 102f / 255f), new Color(0, 153f / 255f, 1), new Color(1, 51f / 255f, 0), new Color(1, 1, 1) };
+    private readonly Color[] DifficultyPressedColor = new Color[4] { new Color(0, 204f / 255f, 0), new Color(0, 107f / 255f, 179f / 255f), new Color(179f / 255f, 36f / 255f, 0), new Color(0.8f, 0.8f, 0.8f) };
+
     private bool canEscape = true;
-    
+
+    private void Awake()
+    {
+        difficultyButtonText = difficultyButton.GetComponentInChildren<Text>();
+    }
+
     private void Start()
     {
         Initiate();
@@ -109,6 +119,15 @@ public class SongSelectManager : MonoBehaviour
     {
         songTitleText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].songTitle;
         songComposerText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].composer;
+        difficultyButtonText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].level[(int)currentDifficulty];
+
+        ColorBlock colorBlock = difficultyButton.colors;
+        colorBlock.normalColor = DifficultyNormalColor[(int)currentDifficulty];
+        colorBlock.selectedColor = DifficultyNormalColor[(int)currentDifficulty];
+        colorBlock.highlightedColor = DifficultyNormalColor[(int)currentDifficulty];
+        colorBlock.pressedColor = DifficultyPressedColor[(int)currentDifficulty];
+        colorBlock.disabledColor = new Color(200f / 255f, 200f / 255f, 200f / 255f, 128f / 255f);
+        difficultyButton.colors = colorBlock;
     }
 
     public void GoToPackSelect()
@@ -168,6 +187,30 @@ public class SongSelectManager : MonoBehaviour
         sendObj.currentDifficulty = currentDifficulty;
         sendObj.songPlayed = true;
         SceneManager.LoadScene("Game");
+    }
+
+    public void DifficultyChange()
+    {
+        switch (currentDifficulty)
+        {
+            case SongDifficulty.Easy:
+                currentDifficulty = SongDifficulty.Normal;
+                break;
+            case SongDifficulty.Normal:
+                currentDifficulty = SongDifficulty.Hard;
+                break;
+            case SongDifficulty.Hard:
+                if (SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].specialLevelState == SongState.Playable)
+                    currentDifficulty = SongDifficulty.Special;
+                else
+                    currentDifficulty = SongDifficulty.Easy;
+                break;
+            case SongDifficulty.Special:
+                currentDifficulty = SongDifficulty.Easy;
+                break;
+        }
+
+        RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 }
 
