@@ -859,7 +859,7 @@ ScriptsOnlyBuild:
     className: InitializeManager
   - hash:
       serializedVersion: 2
-      Hash: 1872a03842027ad644fb42f2dc838f02
+      Hash: bbca691f2b213fced8140578bc9bf578
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GamePlayManager

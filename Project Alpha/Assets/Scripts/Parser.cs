@@ -13,9 +13,9 @@ public class Parser : MonoBehaviour
     public GameObject longNotePrefab;
     public TextAsset scoreData;
 
-    Dictionary<int, GameFrame> gameFrameList = new Dictionary<int, GameFrame>();
+    private Dictionary<int, GameFrame> gameFrameList = new Dictionary<int, GameFrame>();
 
-    List<List<PlayData>> playDataList = new List<List<PlayData>>();
+    private List<List<PlayData>> playDataList = new List<List<PlayData>>();
 
     private AudioClip audioClip;
 
@@ -201,7 +201,9 @@ public class Parser : MonoBehaviour
         audioSource.clip = audioClip;
         audioSource.mute = true;
         audioSource.Play();
+
         yield return new WaitForSeconds(audioPreTime);
+
         tempTime = audioPreTime;
         audioSource.mute = false;
         audioSource.Stop();
@@ -257,67 +259,14 @@ public class Parser : MonoBehaviour
                         gameFrameList[(int)temp.data[0]].ResizeFrame(new Vector2(temp.data[1], temp.data[2]), temp.data[3], (LerpType)temp.data[4]);
                         break;
                     case PlayType.DeleteFrame:
-                        gameFrameList[(int)temp.data[0]].DestroyFrame();
+                        gameFrameList[(int)temp.data[0]].Invoke("DestroyFrame", GamePlayManager.Instance.calibration);
                         break;
                 }
             }
             i++;
         }
+        Debug.Log("fixedupdate");
     }
-
-    /*
-    public IEnumerator PlayScoreCoroutine(float audioPreTime)
-    {
-        int i = 0;
-        while (true)
-        {
-            if (i >= playDataList.Count) break;
-
-            if (audioPlayTime >= ((60 / GamePlayManager.Instance.bpm) / 8) * i)
-            {
-                for (int j = 0; j < playDataList[i].Count; j++)
-                {
-                    PlayData temp = playDataList[i][j];
-                    switch (temp.playType)
-                    {
-                        case PlayType.None:
-                            break;
-                        case PlayType.CreateNote:
-                            gameFrameList[(int)temp.data[0]].CreateNote((NoteType)temp.data[1], temp.data[2]);
-                            break;
-                        case PlayType.CreateFrame:
-                            if (!gameFrameList.ContainsKey((int)temp.data[0]))
-                            {
-                                gameFrameList.Add((int)temp.data[0], Instantiate(gameFramePrefab).GetComponent<GameFrame>());
-                                gameFrameList[(int)temp.data[0]].CreateFrame(new Vector2(temp.data[1], temp.data[2]), temp.data[3], new Vector2(temp.data[4], temp.data[5]), temp.data[6], temp.data[7], (LerpType)temp.data[8]);
-                            }
-                            else Debug.LogWarning("이미 존재하는 게임프레임 번호입니다. 다른 번호를 할당해주세요.");
-                            break;
-                        case PlayType.MoveFrame:
-                            gameFrameList[(int)temp.data[0]].MoveFrame(new Vector2(temp.data[1], temp.data[2]), temp.data[3], (LerpType)temp.data[4]);
-                            break;
-                        case PlayType.RotateFrame:
-                            gameFrameList[(int)temp.data[0]].RotateFrame(temp.data[1], temp.data[2], (LerpType)temp.data[3]);
-                            break;
-                        case PlayType.ResizeFrame:
-                            gameFrameList[(int)temp.data[0]].ResizeFrame(new Vector2(temp.data[1], temp.data[2]), temp.data[3], (LerpType)temp.data[4]);
-                            break;
-                        case PlayType.DeleteFrame:
-                            gameFrameList[(int)temp.data[0]].DestroyFrame();
-                            break;
-                    }
-                }
-                i++;
-            }
-
-            yield return null;
-        }
-
-        isScoreFinished = true;
-
-        Debug.Log(GamePlayManager.Instance.GetScore());
-    }
-    */
 }
 
 public class PlayData

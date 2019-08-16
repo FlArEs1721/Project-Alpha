@@ -49,7 +49,7 @@ public class Note : MonoBehaviour
     {
         noteXSize = gameFrame.noteXSize;
         noteYSize = (beatLength == 0) ? GameFrame.JudgementLineWidth : beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
-        yPosition = 5f * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
+        yPosition = (5f + GamePlayManager.Instance.calibration) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         //yPosition = 800f;
         gameFrame.noteList.Add(this);
         isCreated = true;

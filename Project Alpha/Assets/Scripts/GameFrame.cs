@@ -541,7 +541,7 @@ public class GameFrame : MonoBehaviour
     private IEnumerator CreateFrameCoroutine(Vector2 destination, float time, LerpType lerp)
     {
         //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " Start Create");
-        yield return new WaitForSeconds(preTime - time);
+        yield return new WaitForSeconds(preTime - time + GamePlayManager.Instance.calibration);
         //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " End Create");
 
         Vector2 originalFrameSize = Vector2.zero;
@@ -598,7 +598,7 @@ public class GameFrame : MonoBehaviour
 
     private IEnumerator MoveFrameCoroutine(Vector2 destination, float time, LerpType lerp)
     {
-        yield return new WaitForSeconds(preTime);
+        yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
 
         moveFrameEnabled = true;
 
@@ -651,7 +651,7 @@ public class GameFrame : MonoBehaviour
 
     private IEnumerator RotateFrameCoroutine(float destination, float time, LerpType lerp)
     {
-        yield return new WaitForSeconds(preTime);
+        yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
 
         //Debug.Log(destination);
 
@@ -713,7 +713,7 @@ public class GameFrame : MonoBehaviour
     {
         //yield return new WaitForSeconds(preTime);
         float tmp = 0;
-        while (tmp < preTime)
+        while (tmp < preTime + GamePlayManager.Instance.calibration)
         {
             tmp += Time.deltaTime;
             yield return null;
