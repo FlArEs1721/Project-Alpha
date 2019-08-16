@@ -51,7 +51,8 @@ public class Parser : MonoBehaviour
         string[] infos = source.Split(',');
         GamePlayManager.Instance.bpm = float.Parse(infos[0]);
         float audioPreTime = float.Parse(infos[1]);
-        //audioClip = Resources.Load(infos[2], typeof(AudioClip)) as AudioClip;
+        audioClip = Resources.Load<AudioClip>(infos[2]);
+        Debug.Log(audioClip.name + ", " + GamePlayManager.Instance.bpm);
 
         // 32분음표 단위
         Time.fixedDeltaTime = (60 / GamePlayManager.Instance.bpm) / 8;
@@ -60,8 +61,12 @@ public class Parser : MonoBehaviour
 
         for (int i = 0; source != null; i++)
         {
-            // @로 시작하는 줄은 무시 (주석)
-            if (source.Substring(0, 1).Equals("@")) continue;
+            // *로 시작하는 줄은 무시 (주석)
+            if (source.Substring(0, 1).Equals("*"))
+            {
+                source = sr.ReadLine();
+                continue;
+            }
 
             playDataList.Add(new List<PlayData>());
 
@@ -193,7 +198,7 @@ public class Parser : MonoBehaviour
 
     public IEnumerator PlayAudioCoroutine(float audioPreTime)
     {
-        //audioSource.clip = audioClip;
+        audioSource.clip = audioClip;
         audioSource.mute = true;
         audioSource.Play();
         yield return new WaitForSeconds(audioPreTime);

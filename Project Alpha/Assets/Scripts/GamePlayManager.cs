@@ -5,7 +5,15 @@ using UnityEngine;
 public class GamePlayManager : Singleton<GamePlayManager>
 {
     [HideInInspector]
-    public float noteSpeed = 4f;
+    public float noteSpeed = 5f;
+
+    /// <summary>
+    /// 세부 싱크 (노트가 떨어지는 타이밍 조정)
+    /// -> 숫자가 커질수록 판정선에 늦게 닿음
+    /// (0에서 0.5 사이)
+    /// </summary>
+    [HideInInspector]
+    public float calibration = 0.5f;
 
     [HideInInspector]
     public float bpm = 160;
@@ -14,10 +22,10 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public const float NoteSpeedConstant = 160f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeX = 13f;
+    public const float NoteTouchExtraSizeX = 30f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeY = 70f;
+    public const float NoteTouchExtraSizeY = 150f;
 
     [HideInInspector]
     //public float score = 0;

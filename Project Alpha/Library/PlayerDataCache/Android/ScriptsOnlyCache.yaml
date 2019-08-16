@@ -73,7 +73,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9940}
     - Class: 114
-      Script: {instanceID: 10450}
+      Script: {instanceID: 10452}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -110,7 +110,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9446}
     - Class: 114
-      Script: {instanceID: 11622}
+      Script: {instanceID: 10124}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -853,6 +853,12 @@ ScriptsOnlyBuild:
     className: TimelineAsset
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: InitializeManager
+  - hash:
+      serializedVersion: 2
       Hash: 1872a03842027ad644fb42f2dc838f02
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -923,12 +929,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: InitializeManager
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity

@@ -36,7 +36,7 @@ public class GameFrame : MonoBehaviour
     /// 판정선의 너비
     /// </summary>
     [HideInInspector]
-    public const float JudgementLineWidth = 10f;
+    public const float JudgementLineWidth = 13f;
 
     /// <summary>
     /// 게임프레임에 있는 노트들의 리스트
@@ -52,26 +52,12 @@ public class GameFrame : MonoBehaviour
     private IEnumerator createFrameCoroutine;
     private IEnumerator moveFrameCoroutine;
     private IEnumerator rotateFrameCoroutine;
-    private IEnumerator resizeFrameCoroutine0 = null;
-    private IEnumerator resizeFrameCoroutine1 = null;
+    private IEnumerator resizeFrameCoroutine = null;
 
-    private float preTime = 0;
+    private float preTime = 5;
 
     private Dictionary<int, Note> longTouchDictionary = new Dictionary<int, Note>();
     private Dictionary<int, float> longTouchTimeDictionary = new Dictionary<int, float>();
-
-    private void Awake()
-    {
-        //touchManager = GameObject.Find("GameManager").GetComponent<TouchManager>();
-    }
-
-    /// <summary>
-    /// 오브젝트가 생성될 때 실행
-    /// </summary>
-    private void Start()
-    {
-        preTime = 800f / (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed);
-    }
 
     /// <summary>
     /// 매 프레임마다 실행
@@ -380,7 +366,7 @@ public class GameFrame : MonoBehaviour
                     // 터치 위치가 롱노트를 벗어났을 경우
                     if (touchPosX < longTouchDictionary[0].xPosition - (longTouchDictionary[0].noteXSize / 2) - GamePlayManager.NoteTouchExtraSizeX || touchPosX > longTouchDictionary[0].xPosition + (longTouchDictionary[0].noteXSize / 2) + GamePlayManager.NoteTouchExtraSizeX)
                     {
-                        Debug.Log("a");
+                        //Debug.Log("a");
                         if (longTouchDictionary[0].beatLength - longTouchTimeDictionary[0] > 16)
                         {
                             ProcessNote(JudgementType.Miss);
@@ -410,7 +396,7 @@ public class GameFrame : MonoBehaviour
                     {
                         if (longTouchTimeDictionary[0] > longTouchDictionary[0].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8))
                         {
-                            Debug.Log("adgh");
+                            //Debug.Log("adgh");
                             ProcessNote(JudgementType.Perfect);
                             noteList.Remove(longTouchDictionary[0]);
                             longTouchDictionary[0].gameObject.SetActive(false);
@@ -419,7 +405,7 @@ public class GameFrame : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("bcd");
+                            //Debug.Log("bcd");
                             longTouchTimeDictionary[0] += Time.deltaTime;
                         }
                     }
@@ -554,7 +540,9 @@ public class GameFrame : MonoBehaviour
 
     private IEnumerator CreateFrameCoroutine(Vector2 destination, float time, LerpType lerp)
     {
-        yield return new WaitForSeconds(preTime);
+        //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " Start Create");
+        yield return new WaitForSeconds(preTime - time);
+        //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " End Create");
 
         Vector2 originalFrameSize = Vector2.zero;
         float tempTime = 0;
@@ -575,7 +563,8 @@ public class GameFrame : MonoBehaviour
                     this.frameSize = destination;
                     isCreating = false;
 
-                    StopCoroutine(createFrameCoroutine);
+                    //StopCoroutine(createFrameCoroutine);
+                    yield break;
                 }
             }
             yield return null;
@@ -632,7 +621,8 @@ public class GameFrame : MonoBehaviour
                     this.position = destination;
                     moveFrameEnabled = false;
 
-                    StopCoroutine(moveFrameCoroutine);
+                    yield break;
+                    //StopCoroutine(moveFrameCoroutine);
                 }
             }
             yield return null;
@@ -688,7 +678,8 @@ public class GameFrame : MonoBehaviour
                     this.rotation = destination;
                     rotateFrameEnabled = false;
 
-                    StopCoroutine(rotateFrameCoroutine);
+                    yield break;
+                    //StopCoroutine(rotateFrameCoroutine);
                 }
             }
             yield return null;
@@ -703,34 +694,39 @@ public class GameFrame : MonoBehaviour
     /// <param name="lerp">선형 보간 종류</param>
     public void ResizeFrame(Vector2 destination, float resizeTime, LerpType lerp)
     {
-        //if (resizeFrameCoroutine0 != null)
-        //{
-        //    // 이미 크기 변경 중이라면 변경 중지
-        //    resizeFrameEnabled = false;
-        //    preFrameSize = this.frameSize;
-        //    StopCoroutine(resizeFrameCoroutine0);
-
-        //    Debug.Log("ddd");
-        //}
-
-        // 크기 변경 코루틴 작동
-        resizeFrameCoroutine0 = resizeFrameCoroutine1;
-        resizeFrameCoroutine1 = ResizeFrameCoroutine(destination, resizeTime, lerp);
-        StartCoroutine(resizeFrameCoroutine1);
-    }
-
-    private IEnumerator ResizeFrameCoroutine(Vector2 destination, float time, LerpType lerp)
-    {
-        yield return new WaitForSeconds(preTime);
-
-        if (resizeFrameCoroutine0 != null)
+        if (resizeFrameEnabled)
         {
             // 이미 크기 변경 중이라면 변경 중지
             resizeFrameEnabled = false;
             preFrameSize = this.frameSize;
-            StopCoroutine(resizeFrameCoroutine0);
-            resizeFrameCoroutine0 = null;
+            StopCoroutine(resizeFrameCoroutine);
+
+            //Debug.Log("ddd");
         }
+
+        // 크기 변경 코루틴 작동
+        resizeFrameCoroutine = ResizeFrameCoroutine(destination, resizeTime, lerp);
+        StartCoroutine(resizeFrameCoroutine);
+    }
+
+    private IEnumerator ResizeFrameCoroutine(Vector2 destination, float time, LerpType lerp)
+    {
+        //yield return new WaitForSeconds(preTime);
+        float tmp = 0;
+        while (tmp < preTime)
+        {
+            tmp += Time.deltaTime;
+            yield return null;
+        }
+
+        //if (resizeFrameCoroutine != null)
+        //{
+        //    // 이미 크기 변경 중이라면 변경 중지
+        //    resizeFrameEnabled = false;
+        //    preFrameSize = this.frameSize;
+        //    StopCoroutine(resizeFrameCoroutine);
+        //    resizeFrameCoroutine = null;
+        //}
 
         resizeFrameEnabled = true;
 
@@ -760,8 +756,6 @@ public class GameFrame : MonoBehaviour
             }
             yield return null;
         }
-
-        resizeFrameCoroutine1 = null;
     }
 
     /// <summary>
