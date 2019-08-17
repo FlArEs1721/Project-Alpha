@@ -167,7 +167,7 @@ public class Note : MonoBehaviour
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < (-0.75f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed) && !isTouching)
+            if (yPosition < (-0.5f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed) && !isTouching)
             {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(this);

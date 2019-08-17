@@ -133,7 +133,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
         return result;
     }
 
-    public Rank GetRank(float score)
+    public static Rank GetRank(float score)
     {
         if (score >= 1000000) return Rank.AllPerfect;
         else if (score >= 950000) return Rank.S;

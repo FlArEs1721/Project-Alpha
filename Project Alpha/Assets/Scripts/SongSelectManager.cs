@@ -182,6 +182,7 @@ public class SongSelectManager : MonoBehaviour
     {
         sendObj.songTitle = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].songTitle;
         sendObj.songDifficulty = currentDifficulty.ToString();
+        sendObj.songDifficultyLevel = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].level[(int)currentDifficulty];
         sendObj.currentPackIndex = currentPackIndex;
         sendObj.currentSongIndex = currentSongIndex;
         sendObj.currentDifficulty = currentDifficulty;

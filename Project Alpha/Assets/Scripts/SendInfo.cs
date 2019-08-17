@@ -6,9 +6,10 @@ public class SendInfo : MonoBehaviour
 {
     [HideInInspector]
     public string songTitle = "";
-
     [HideInInspector]
     public string songDifficulty = "";
+    [HideInInspector]
+    public string songDifficultyLevel = "";
 
     [HideInInspector]
     public int currentPackIndex = 0;

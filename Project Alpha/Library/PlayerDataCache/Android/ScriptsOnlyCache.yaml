@@ -11,6 +11,7 @@ ScriptsOnlyBuild:
     - ScoreTextControl
     - SendInfo
     - SongSelectManager
+    - SongTextControl
     - TitleManager
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -65,9 +66,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9746}
     - Class: 114
-      Script: {instanceID: 9940}
+      Script: {instanceID: 9942}
     - Class: 114
-      Script: {instanceID: 10452}
+      Script: {instanceID: 10454}
+    - Class: 114
+      Script: {instanceID: 11226}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -104,7 +107,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9446}
     - Class: 114
-      Script: {instanceID: 10124}
+      Script: {instanceID: 10126}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -137,7 +140,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9432}
     - Class: 114
-      Script: {instanceID: 11240}
+      Script: {instanceID: 9904}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -184,7 +187,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9432}
     - Class: 114
-      Script: {instanceID: 10008}
+      Script: {instanceID: 10010}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -483,7 +486,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 1f1b1bbeb418639805b8be49a3e18a1f
+      Hash: 4174fcfb453bffc64197ae7f208233dc
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SendInfo
@@ -783,6 +786,12 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
+      Hash: 32ada221ffbb2fa20934e72dd0f4cc8a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ResultManager
+  - hash:
+      serializedVersion: 2
       Hash: ecb55536bf5f57082c75aae2b8477bd3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -951,10 +960,10 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 32ada221ffbb2fa20934e72dd0f4cc8a
+      Hash: 7c91d8cdc7285f9445057ff9261c8f26
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: ResultManager
+    className: SongTextControl
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity
