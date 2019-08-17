@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseControl : MonoBehaviour
 {
+    public Parser parser;
     public GameObject pausePanel;
     public AudioSource audioSource;
 
@@ -13,8 +14,9 @@ public class PauseControl : MonoBehaviour
     public void Pause()
     {
         Time.timeScale = 0;
-        fixedDeltaTime = Time.fixedDeltaTime;
-        Time.fixedDeltaTime = float.PositiveInfinity;
+        //fixedDeltaTime = Time.fixedDeltaTime;
+        //Time.fixedDeltaTime = float.PositiveInfinity;
+        parser.enabled = false;
         audioSource.Pause();
         pausePanel.SetActive(true);
     }
@@ -24,14 +26,15 @@ public class PauseControl : MonoBehaviour
         pausePanel.SetActive(false);
         audioSource.Play();
         Time.timeScale = 1;
-        Time.fixedDeltaTime = fixedDeltaTime;
+        //Time.fixedDeltaTime = fixedDeltaTime;
+        parser.enabled = true;
     }
 
     public void Retry()
     {
         StopAllCoroutines();
         Time.timeScale = 1;
-        Time.fixedDeltaTime = fixedDeltaTime;
+        //Time.fixedDeltaTime = fixedDeltaTime;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -40,7 +43,7 @@ public class PauseControl : MonoBehaviour
         // TODO: 메인메뉴 만들기 & 연결
         StopAllCoroutines();
         Time.timeScale = 1;
-        Time.fixedDeltaTime = fixedDeltaTime;
+        //Time.fixedDeltaTime = fixedDeltaTime;
         SceneManager.LoadScene("SongSelect");
     }
 }

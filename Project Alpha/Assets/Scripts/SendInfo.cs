@@ -19,6 +19,12 @@ public class SendInfo : MonoBehaviour
     [HideInInspector]
     public bool songPlayed = false;
 
+    /// <summary>
+    /// 결과 (점수, 콤보, 퍼펙트, 노말, 미스)
+    /// </summary>
+    [HideInInspector]
+    public float[] results = new float[5];
+
     private void Start()
     {
         /*

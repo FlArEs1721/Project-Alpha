@@ -13,7 +13,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
     /// (0에서 0.5 사이)
     /// </summary>
     [HideInInspector]
-    public float calibration = 0.08f;
+    public float calibration = 0.12f;
 
     [HideInInspector]
     public float bpm = 160;

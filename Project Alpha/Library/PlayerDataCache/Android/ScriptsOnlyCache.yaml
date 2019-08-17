@@ -2,12 +2,12 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - ComboTextControl
-    - FrameCreateTest
     - GameFrame
     - InitializeManager
     - Note
     - Parser
     - PauseControl
+    - ResultManager
     - ScoreTextControl
     - SendInfo
     - SongSelectManager
@@ -36,13 +36,9 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 49
-      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 82
-      Script: {instanceID: 0}
-    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -68,8 +64,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 9682}
     - Class: 114
       Script: {instanceID: 9746}
-    - Class: 114
-      Script: {instanceID: 9904}
     - Class: 114
       Script: {instanceID: 9940}
     - Class: 114
@@ -122,13 +116,39 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 20
       Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
     - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9374}
+    - Class: 114
+      Script: {instanceID: 9380}
+    - Class: 114
+      Script: {instanceID: 9386}
+    - Class: 114
+      Script: {instanceID: 9430}
+    - Class: 114
+      Script: {instanceID: 9432}
+    - Class: 114
+      Script: {instanceID: 11240}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
     - Class: 157
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
     Assets/Scenes/SongSelect.unity:
     - Class: 1
@@ -463,7 +483,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: c9da5d445967dfa246edbf6300a5151a
+      Hash: 1f1b1bbeb418639805b8be49a3e18a1f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SendInfo
@@ -697,7 +717,7 @@ ScriptsOnlyBuild:
     className: ComboTextControl
   - hash:
       serializedVersion: 2
-      Hash: 199b8bb9d3f93e2158811af0919753c8
+      Hash: 6bfe123cbfc0d5c45eeece6547986bbd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PauseControl
@@ -781,7 +801,7 @@ ScriptsOnlyBuild:
     className: Note
   - hash:
       serializedVersion: 2
-      Hash: 56e7a702a3227d8278c0790bf6720fe1
+      Hash: c62eaaae0d6dbe4de3504e31b99c7c41
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SongSelectManager
@@ -929,6 +949,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 32ada221ffbb2fa20934e72dd0f4cc8a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ResultManager
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity

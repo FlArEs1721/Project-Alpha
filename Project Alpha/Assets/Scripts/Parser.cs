@@ -19,6 +19,8 @@ public class Parser : MonoBehaviour
 
     private AudioClip audioClip;
 
+    private SendInfo sendSongInfo;
+
     private float audioPlayTime = 0;
     private float tempTime = 0;
 
@@ -26,9 +28,15 @@ public class Parser : MonoBehaviour
 
     private int i = 0;
 
+    private void Awake()
+    {
+        //Time.fixedDeltaTime = float.PositiveInfinity;
+        
+    }
+
     private void Start()
     {
-        SendInfo sendSongInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
+        sendSongInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
         scoreData = Resources.Load(sendSongInfo.songTitle + "_" + sendSongInfo.songDifficulty, typeof(TextAsset)) as TextAsset;
         //Destroy(sendSongInfo.gameObject);
         InitiateScore();
@@ -39,7 +47,10 @@ public class Parser : MonoBehaviour
         audioPlayTime = audioSource.time + tempTime;
 
         if (!audioSource.isPlaying && isScoreFinished)
+        {
+            sendSongInfo.results = new float[5] { GamePlayManager.Instance.GetScore(), GamePlayManager.Instance.maxCombo, GamePlayManager.Instance.perfectCount, GamePlayManager.Instance.normalCount, GamePlayManager.Instance.missCount};
             SceneManager.LoadScene("Result");
+        }
     }
 
     public void InitiateScore()
@@ -52,7 +63,7 @@ public class Parser : MonoBehaviour
         GamePlayManager.Instance.bpm = float.Parse(infos[0]);
         float audioPreTime = float.Parse(infos[1]);
         audioClip = Resources.Load<AudioClip>(infos[2]);
-        Debug.Log(audioClip.name + ", " + GamePlayManager.Instance.bpm);
+        //Debug.Log(audioClip.name + ", " + GamePlayManager.Instance.bpm);
 
         // 32분음표 단위
         Time.fixedDeltaTime = (60 / GamePlayManager.Instance.bpm) / 8;
@@ -265,7 +276,7 @@ public class Parser : MonoBehaviour
             }
             i++;
         }
-        Debug.Log("fixedupdate");
+        //Debug.Log("fixedupdate");
     }
 }
 
