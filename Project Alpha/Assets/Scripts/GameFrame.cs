@@ -788,7 +788,6 @@ public class GameFrame : MonoBehaviour
                 // 판정
                 //GamePlayManager.Instance.score += 920000f / GamePlayManager.Instance.maxNoteCount;
                 GamePlayManager.Instance.perfectCount++;
-                // TODO: 콤보점수
                 // 콤보
                 GamePlayManager.Instance.currentCombo++;
                 if (GamePlayManager.Instance.currentCombo > GamePlayManager.Instance.maxCombo) GamePlayManager.Instance.maxCombo = GamePlayManager.Instance.currentCombo;
@@ -797,7 +796,6 @@ public class GameFrame : MonoBehaviour
                 // 판정
                 //GamePlayManager.Instance.score += 522000f / GamePlayManager.Instance.maxNoteCount;
                 GamePlayManager.Instance.normalCount++;
-                // TODO: 콤보점수
                 // 콤보
                 GamePlayManager.Instance.currentCombo++;
                 if (GamePlayManager.Instance.currentCombo > GamePlayManager.Instance.maxCombo) GamePlayManager.Instance.maxCombo = GamePlayManager.Instance.currentCombo;
@@ -828,7 +826,6 @@ public enum NoteType
     /// 롱 노트
     /// </summary>
     Long
-        // TODO: 롱노트 추가
 }
 
 /// <summary>

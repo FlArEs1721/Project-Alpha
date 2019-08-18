@@ -47,6 +47,8 @@ public class SongSelectManager : MonoBehaviour
             currentSongIndex = sendObj.currentSongIndex;
             currentDifficulty = sendObj.currentDifficulty;
 
+            sendObj.songPlayed = false;
+
             SelectPack(currentPackIndex, currentSongIndex);
         }
     }
@@ -137,7 +139,7 @@ public class SongSelectManager : MonoBehaviour
         Transform[] childTransforms = songPackSelectPanel.GetComponentsInChildren<Transform>();
         for (int i = childTransforms.Length - 1; i >= 0; i--)
         {
-            if (childTransforms[i].Equals(songPackSelectPanel.transform)) continue;
+            if (childTransforms[i].Equals(songPackSelectPanel.transform) || childTransforms[i].tag.Equals("Button")) continue;
 
             Destroy(childTransforms[i].gameObject);
         }
@@ -212,6 +214,16 @@ public class SongSelectManager : MonoBehaviour
         }
 
         RefreshSongInfo(currentPackIndex, currentSongIndex);
+    }
+
+    public void GoToSetting()
+    {
+        SceneManager.LoadScene("Setting");
+    }
+
+    public void Back()
+    {
+        SceneManager.LoadScene("Title");
     }
 }
 

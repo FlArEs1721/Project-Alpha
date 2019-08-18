@@ -10,6 +10,7 @@ ScriptsOnlyBuild:
     - ResultManager
     - ScoreTextControl
     - SendInfo
+    - SettingManager
     - SongSelectManager
     - SongTextControl
     - TitleManager
@@ -22,6 +23,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.Text
   sceneClasses:
     Assets/Scenes/Game.unity:
@@ -68,9 +70,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9942}
     - Class: 114
-      Script: {instanceID: 10454}
+      Script: {instanceID: 10296}
     - Class: 114
-      Script: {instanceID: 11226}
+      Script: {instanceID: 10456}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -130,11 +132,15 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 9372}
+    - Class: 114
       Script: {instanceID: 9374}
     - Class: 114
       Script: {instanceID: 9380}
     - Class: 114
       Script: {instanceID: 9386}
+    - Class: 114
+      Script: {instanceID: 9394}
     - Class: 114
       Script: {instanceID: 9430}
     - Class: 114
@@ -146,6 +152,57 @@ ScriptsOnlyBuild:
     - Class: 128
       Script: {instanceID: 0}
     - Class: 157
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/Setting.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9372}
+    - Class: 114
+      Script: {instanceID: 9374}
+    - Class: 114
+      Script: {instanceID: 9380}
+    - Class: 114
+      Script: {instanceID: 9386}
+    - Class: 114
+      Script: {instanceID: 9394}
+    - Class: 114
+      Script: {instanceID: 9420}
+    - Class: 114
+      Script: {instanceID: 9430}
+    - Class: 114
+      Script: {instanceID: 9432}
+    - Class: 114
+      Script: {instanceID: 12140}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 213
       Script: {instanceID: 0}
     - Class: 222
       Script: {instanceID: 0}
@@ -486,7 +543,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 4174fcfb453bffc64197ae7f208233dc
+      Hash: 884657d45678893ef36634e505473095
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SendInfo
@@ -912,6 +969,12 @@ ScriptsOnlyBuild:
     className: AudioTrack
   - hash:
       serializedVersion: 2
+      Hash: 7c91d8cdc7285f9445057ff9261c8f26
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SongTextControl
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -960,10 +1023,10 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 7c91d8cdc7285f9445057ff9261c8f26
+      Hash: 9d362073d803ad0a8f9acfd876c992bd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: SongTextControl
+    className: SettingManager
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity
@@ -971,4 +1034,5 @@ ScriptsOnlyBuild:
   - Assets/Scenes/SongSelect.unity
   - Assets/Scenes/Game.unity
   - Assets/Scenes/Result.unity
+  - Assets/Scenes/Setting.unity
   playerPath: D:/UNITY exe/Project_Alpha.apk

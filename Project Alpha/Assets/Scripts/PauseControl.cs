@@ -40,7 +40,6 @@ public class PauseControl : MonoBehaviour
 
     public void MainMenu()
     {
-        // TODO: 메인메뉴 만들기 & 연결
         StopAllCoroutines();
         Time.timeScale = 1;
         //Time.fixedDeltaTime = fixedDeltaTime;

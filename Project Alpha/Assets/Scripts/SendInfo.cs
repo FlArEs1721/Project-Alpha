@@ -5,6 +5,11 @@ using UnityEngine;
 public class SendInfo : MonoBehaviour
 {
     [HideInInspector]
+    public float noteSpeed = 5;
+    [HideInInspector]
+    public float calibration = 0.12f;
+
+    [HideInInspector]
     public string songTitle = "";
     [HideInInspector]
     public string songDifficulty = "";

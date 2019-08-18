@@ -19,7 +19,7 @@ public class Parser : MonoBehaviour
 
     private AudioClip audioClip;
 
-    private SendInfo sendSongInfo;
+    private SendInfo sendInfo;
 
     private float audioPlayTime = 0;
     private float tempTime = 0;
@@ -36,8 +36,10 @@ public class Parser : MonoBehaviour
 
     private void Start()
     {
-        sendSongInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
-        scoreData = Resources.Load(sendSongInfo.songTitle + "_" + sendSongInfo.songDifficulty, typeof(TextAsset)) as TextAsset;
+        sendInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
+        GamePlayManager.Instance.noteSpeed = sendInfo.noteSpeed;
+        GamePlayManager.Instance.calibration = sendInfo.calibration;
+        scoreData = Resources.Load(sendInfo.songTitle + "_" + sendInfo.songDifficulty, typeof(TextAsset)) as TextAsset;
         //Destroy(sendSongInfo.gameObject);
         InitiateScore();
     }
@@ -48,7 +50,7 @@ public class Parser : MonoBehaviour
 
         if (!audioSource.isPlaying && isScoreFinished)
         {
-            sendSongInfo.results = new float[5] { GamePlayManager.Instance.GetScore(), GamePlayManager.Instance.maxCombo, GamePlayManager.Instance.perfectCount, GamePlayManager.Instance.normalCount, GamePlayManager.Instance.missCount};
+            sendInfo.results = new float[5] { GamePlayManager.Instance.GetScore(), GamePlayManager.Instance.maxCombo, GamePlayManager.Instance.perfectCount, GamePlayManager.Instance.normalCount, GamePlayManager.Instance.missCount};
             SceneManager.LoadScene("Result");
         }
     }
