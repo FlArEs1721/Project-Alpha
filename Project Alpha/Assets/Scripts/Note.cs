@@ -8,6 +8,7 @@ public class Note : MonoBehaviour
     /// <summary>
     /// 노트 타입
     /// </summary>
+    [HideInInspector]
     public NoteType noteType;
 
     /// <summary>
@@ -167,17 +168,19 @@ public class Note : MonoBehaviour
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < (-0.5f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed) && !isTouching)
+            if (yPosition < (-0.25f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed) && !isTouching)
             {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(this);
                 //Destroy(gameObject);
+                DisplayJudgement(JudgementType.Miss);
                 gameObject.SetActive(false);
             }
 
             if (yPosition <= 5f && isProcessed)
             {
                 gameFrame.noteList.Remove(this);
+                DisplayJudgement(JudgementType.Perfect);
                 gameObject.SetActive(false);
             }
 
@@ -232,6 +235,40 @@ public class Note : MonoBehaviour
     {
         if (Mathf.Abs(yPosition) < 2) return JudgementType.Perfect;
         else return JudgementType.Ignore;
+    }
+
+    public float GetLastTime()
+    {
+        if (noteType == NoteType.Long)
+        {
+            //Debug.Log((noteYSize + yPosition) / (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed));
+            return (noteYSize + yPosition) / (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public void DisplayJudgement(JudgementType judgement, float preTime = 0)
+    {
+        GameObject judgementObj = GamePlayManager.Instance.PullJudgementObject(gameFrame.judgementLayer);
+        judgementObj.transform.localEulerAngles = new Vector3(0, 0, 0);
+        switch (judgement)
+        {
+            case JudgementType.Perfect:
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 135f / 255f, 1);
+                break;
+            case JudgementType.Normal:
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0);
+                break;
+            case JudgementType.Miss:
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(1, 51f / 255f, 0);
+                break;
+        }
+        judgementObj.transform.localScale = new Vector3(noteXSize, GameFrame.JudgementLineWidth, 1);
+        judgementObj.transform.localPosition = new Vector3(xPosition, -(gameFrame.frameSize.y / 2) + (GameFrame.JudgementLineWidth / 2), 0);
+        judgementObj.GetComponent<JudgementObjectControl>().Initialize();
     }
 }
 

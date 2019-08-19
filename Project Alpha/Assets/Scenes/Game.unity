@@ -840,6 +840,8 @@ MonoBehaviour:
     type: 3}
   longNotePrefab: {fileID: 8248938337902962763, guid: a755aff1f5b8fe547a80af4b8a5cba07,
     type: 3}
+  judgementObjectPrefab: {fileID: 7254837875708892987, guid: 5fbef580a92301e4f85bad87a45447e4,
+    type: 3}
   scoreData: {fileID: 0}
 --- !u!114 &1248108846
 MonoBehaviour:

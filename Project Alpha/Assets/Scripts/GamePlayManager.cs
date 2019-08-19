@@ -58,28 +58,36 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public List<GameObject> slideNotePool = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> longNotePool = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> judgementObjectPool = new List<GameObject>();
 
-    public void CreateNote(NoteType noteType, GameObject prefab)
+    public void CreateNote(NoteType noteType, GameObject notePrefab, GameObject judgementPrefab)
     {
         GameObject note = null;
+        GameObject judgementObj = null;
+
         switch (noteType)
         {
             case NoteType.Touch:
-                note = Instantiate(prefab, this.transform);
+                note = Instantiate(notePrefab, this.transform);
                 note.SetActive(false);
                 touchNotePool.Add(note);
                 break;
             case NoteType.Slide:
-                note = Instantiate(prefab, this.transform);
+                note = Instantiate(notePrefab, this.transform);
                 note.SetActive(false);
                 slideNotePool.Add(note);
                 break;
             case NoteType.Long:
-                note = Instantiate(prefab, this.transform);
+                note = Instantiate(notePrefab, this.transform);
                 note.SetActive(false);
                 longNotePool.Add(note);
                 break;
         }
+
+        judgementObj = Instantiate(judgementPrefab, this.transform);
+        judgementObj.SetActive(false);
+        judgementObjectPool.Add(judgementObj);
     }
 
     public GameObject PullNote(NoteType noteType, GameObject noteLayer)
@@ -107,6 +115,16 @@ public class GamePlayManager : Singleton<GamePlayManager>
                 return note;
         }
         return null;
+    }
+
+    public GameObject PullJudgementObject(GameObject judgementLayer)
+    {
+        GameObject judgementObj = null;
+        judgementObj = judgementObjectPool[0];
+        judgementObjectPool.RemoveAt(0);
+        judgementObj.transform.SetParent(judgementLayer.transform);
+        judgementObj.SetActive(true);
+        return judgementObj;
     }
 
     public float GetScore()

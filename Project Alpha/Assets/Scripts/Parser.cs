@@ -11,6 +11,7 @@ public class Parser : MonoBehaviour
     public GameObject touchNotePrefab;
     public GameObject slideNotePrefab;
     public GameObject longNotePrefab;
+    public GameObject judgementObjectPrefab;
     public TextAsset scoreData;
 
     private Dictionary<int, GameFrame> gameFrameList = new Dictionary<int, GameFrame>();
@@ -171,13 +172,13 @@ public class Parser : MonoBehaviour
                             switch (int.Parse(tempArray[2]))
                             {
                                 case 0:
-                                    GamePlayManager.Instance.CreateNote(NoteType.Touch, touchNotePrefab);
+                                    GamePlayManager.Instance.CreateNote(NoteType.Touch, touchNotePrefab, judgementObjectPrefab);
                                     break;
                                 case 1:
-                                    GamePlayManager.Instance.CreateNote(NoteType.Slide, slideNotePrefab);
+                                    GamePlayManager.Instance.CreateNote(NoteType.Slide, slideNotePrefab, judgementObjectPrefab);
                                     break;
                                 case 2:
-                                    GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab);
+                                    GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
                                     // 박자단위 길이
                                     playDataList[i][j].data[3] = float.Parse(tempArray[4]);
                                     break;

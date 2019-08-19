@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 6}
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 544}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 494}
   m_MaxSize: {x: 14004, y: 14044}
   vertical: 0
-  controlID: 19
+  controlID: 95
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 494}
   m_MaxSize: {x: 10002, y: 14044}
   vertical: 1
-  controlID: 20
+  controlID: 101
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 222}
   m_MaxSize: {x: 8006, y: 4022}
   vertical: 0
-  controlID: 21
+  controlID: 102
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -263,15 +263,15 @@ MonoBehaviour:
     y: 0
     width: 1141
     height: 574
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 204, y: 222}
+  m_MaxSize: {x: 4004, y: 4022}
+  m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
   - {fileID: 12}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -336,20 +336,20 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Prefabs
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Prefabs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: D:\UNITY\Project-Alpha\Project Alpha
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: d62a0000
-    m_LastClickedID: 10966
-    m_ExpandedIDs: 000000001c29000026290000b8290000582a000000ca9a3b
+    m_SelectedIDs: aa290000
+    m_LastClickedID: 10666
+    m_ExpandedIDs: 000000002829000032290000c4290000642a000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -377,7 +377,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000001c29000026290000b8290000582a0000
+    m_ExpandedIDs: 000000002829000032290000c4290000642a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000307a3400e4430000000000006a290000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -421,7 +421,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 3}
+      m_ClientGUIView: {fileID: 5}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_InstanceID: 0
@@ -499,21 +499,21 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 5621ffff7e21ffff5822ffff5e22ffff6c22ffff7622ffff8622ffff8a22ffff9046ffffb048ffff5c49ffffb44dffff164effff3e4effff444effff4c4effff544effff5c4effff644effff6c4effff944effff6a4fffffce4ffffff64fffffd450ffffde50fffff050fffffe50ffff1251ffff1a51ffff74dfffff0ae0ffffd8e0fffff6e0ffff14e1ffff80e2fffffee2ffff70e3ffffaae5ffffe4e6ffff74ecffff08faffff1efaffff64faffff74fbffff5e360000703600008c3a0000f03a0000023b0000ae3b0000c03b00007e3e0000883e0000ac3e0000305900005e5900000c5d0000
+      m_ExpandedIDs: 0e30fbff3c30fbff1631fbff1c31fbff2a31fbff3431fbff4431fbff4831fbfff460fdfffe60fdff0a61fdff4ea3fdff0ea5fdff24a5fdff3ea5fdff68e7fdff84ebfdff9aebfdffde2dfeff922efeff5831feff6e31feff8831feffb273feffa2b6feff84b7feff9ab7feffb4b7feffdef9fefff4fafeff0afbfeff4e3dffff1881ffffc887ffff668bffff8e8bffff688cffff6e8cffff7c8cffff868cffff968cffff9a8cffff32afffff5aafffff34b0ffff3ab0ffff48b0ffff52b0ffff62b0ffff66b0ffff62fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: JudgementObject(Clone)
+        m_OriginalName: JudgementObject(Clone)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -154962
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 4}
       m_SearchString: 
@@ -559,9 +559,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 969.13873, y: 539.7668, z: -996.8635}
+    m_Target: {x: 25.438635, y: -58.006218, z: -2688.3796}
     speed: 2
-    m_Value: {x: 969.13873, y: 539.7668, z: -996.8635}
+    m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -594,9 +594,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 897.3425
+    m_Target: 817.96063
     speed: 2
-    m_Value: 897.3425
+    m_Value: 2.3566716
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -670,7 +670,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1

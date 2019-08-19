@@ -8,6 +8,7 @@ public class GameFrame : MonoBehaviour
 {
     public GameObject bgSprite;
     public GameObject noteLayer;
+    public GameObject judgementLayer;
     public GameObject judgementLine;
 
     /// <summary>
@@ -57,7 +58,6 @@ public class GameFrame : MonoBehaviour
     private float preTime = 5;
 
     private Dictionary<int, Note> longTouchDictionary = new Dictionary<int, Note>();
-    private Dictionary<int, float> longTouchTimeDictionary = new Dictionary<int, float>();
 
     /// <summary>
     /// 매 프레임마다 실행
@@ -132,17 +132,19 @@ public class GameFrame : MonoBehaviour
                                         // 노트 처리
                                         ProcessNote(judgement1);
                                         noteList.Remove(touchedNoteList1[targetIndex1]);
+                                        touchedNoteList1[targetIndex1].DisplayJudgement(judgement1);
                                         touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                         break;
                                     case NoteType.Slide:
                                         // 노트 처리
                                         if (!touchedNoteList1[targetIndex1].isProcessed) ProcessNote(judgement1);
                                         noteList.Remove(touchedNoteList1[targetIndex1]);
+                                        touchedNoteList1[targetIndex1].DisplayJudgement(judgement1);
                                         touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                         break;
                                     case NoteType.Long:
                                         longTouchDictionary.Add(i, touchedNoteList1[targetIndex1]);
-                                        longTouchTimeDictionary.Add(i, 0);
+                                        //longTouchTimeDictionary.Add(i, 0);
                                         touchedNoteList1[targetIndex1].isTouching = true;
                                         break;
                                 }
@@ -158,44 +160,48 @@ public class GameFrame : MonoBehaviour
                                 // 터치 위치가 롱노트를 벗어났을 경우
                                 if (touchPosX < longTouchDictionary[i].xPosition - (longTouchDictionary[i].noteXSize / 2) - GamePlayManager.NoteTouchExtraSizeX || touchPosX > longTouchDictionary[i].xPosition + (longTouchDictionary[i].noteXSize / 2) + GamePlayManager.NoteTouchExtraSizeX)
                                 {
-                                    if (longTouchDictionary[i].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[i] > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                    if (longTouchDictionary[i].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
                                     {
                                         ProcessNote(JudgementType.Miss);
                                         noteList.Remove(longTouchDictionary[i]);
+                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Miss);
                                         longTouchDictionary[i].gameObject.SetActive(false);
                                         longTouchDictionary.Remove(i);
-                                        longTouchTimeDictionary.Remove(i);
+                                        //longTouchTimeDictionary.Remove(i);
                                     }
-                                    else if (longTouchDictionary[i].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[i] > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                    else if (longTouchDictionary[i].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
                                     {
                                         ProcessNote(JudgementType.Normal);
                                         noteList.Remove(longTouchDictionary[i]);
+                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Normal);
                                         longTouchDictionary[i].gameObject.SetActive(false);
                                         longTouchDictionary.Remove(i);
-                                        longTouchTimeDictionary.Remove(i);
+                                        //longTouchTimeDictionary.Remove(i);
                                     }
                                     else
                                     {
                                         ProcessNote(JudgementType.Perfect);
                                         noteList.Remove(longTouchDictionary[i]);
+                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
                                         longTouchDictionary[i].gameObject.SetActive(false);
                                         longTouchDictionary.Remove(i);
-                                        longTouchTimeDictionary.Remove(i);
+                                        //longTouchTimeDictionary.Remove(i);
                                     }
                                 }
                                 else
                                 {
-                                    if (longTouchTimeDictionary[i] > longTouchDictionary[i].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                    if (longTouchDictionary[i].GetLastTime() < 0)
                                     {
                                         ProcessNote(JudgementType.Perfect);
                                         noteList.Remove(longTouchDictionary[i]);
+                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
                                         longTouchDictionary[i].gameObject.SetActive(false);
                                         longTouchDictionary.Remove(i);
-                                        longTouchTimeDictionary.Remove(i);
+                                        //longTouchTimeDictionary.Remove(i);
                                     }
                                     else
                                     {
-                                        longTouchTimeDictionary[i] += Time.deltaTime;
+                                        //longTouchTimeDictionary[i] += Time.deltaTime;
                                     }
                                 }
                             }
@@ -228,31 +234,35 @@ public class GameFrame : MonoBehaviour
 
                         // 롱 노트 뗄 때 처리
                         case TouchPhase.Ended:
+                        case TouchPhase.Canceled:
                             if (longTouchDictionary.ContainsKey(i))
                             {
-                                if (longTouchDictionary[i].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[i] > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                if (longTouchDictionary[i].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
                                 {
                                     ProcessNote(JudgementType.Miss);
                                     noteList.Remove(longTouchDictionary[i]);
+                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Miss);
                                     longTouchDictionary[i].gameObject.SetActive(false);
                                     longTouchDictionary.Remove(i);
-                                    longTouchTimeDictionary.Remove(i);
+                                    //longTouchTimeDictionary.Remove(i);
                                 }
-                                else if (longTouchDictionary[i].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[i] > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                else if (longTouchDictionary[i].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
                                 {
                                     ProcessNote(JudgementType.Normal);
                                     noteList.Remove(longTouchDictionary[i]);
+                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Normal);
                                     longTouchDictionary[i].gameObject.SetActive(false);
                                     longTouchDictionary.Remove(i);
-                                    longTouchTimeDictionary.Remove(i);
+                                    //longTouchTimeDictionary.Remove(i);
                                 }
                                 else
                                 {
                                     ProcessNote(JudgementType.Perfect);
                                     noteList.Remove(longTouchDictionary[i]);
+                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
                                     longTouchDictionary[i].gameObject.SetActive(false);
                                     longTouchDictionary.Remove(i);
-                                    longTouchTimeDictionary.Remove(i);
+                                    //longTouchTimeDictionary.Remove(i);
                                 }
                             }
                             break;
@@ -344,17 +354,19 @@ public class GameFrame : MonoBehaviour
                                 // 노트 처리
                                 ProcessNote(judgement1);
                                 noteList.Remove(touchedNoteList1[targetIndex1]);
+                                touchedNoteList1[targetIndex1].DisplayJudgement(judgement1);
                                 touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                 break;
                             case NoteType.Slide:
                                 // 노트 처리
                                 if (!touchedNoteList1[targetIndex1].isProcessed) ProcessNote(judgement1);
                                 noteList.Remove(touchedNoteList1[targetIndex1]);
+                                touchedNoteList1[targetIndex1].DisplayJudgement(judgement1);
                                 touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                 break;
                             case NoteType.Long:
                                 longTouchDictionary.Add(0, touchedNoteList1[targetIndex1]);
-                                longTouchTimeDictionary.Add(0, 0);
+                                //longTouchTimeDictionary.Add(0, 0);
                                 touchedNoteList1[targetIndex1].isTouching = true;
                                 break;
                         }
@@ -369,46 +381,50 @@ public class GameFrame : MonoBehaviour
                         if (touchPosX < longTouchDictionary[0].xPosition - (longTouchDictionary[0].noteXSize / 2) - GamePlayManager.NoteTouchExtraSizeX || touchPosX > longTouchDictionary[0].xPosition + (longTouchDictionary[0].noteXSize / 2) + GamePlayManager.NoteTouchExtraSizeX)
                         {
                             //Debug.Log("a");
-                            if (longTouchDictionary[0].beatLength - longTouchTimeDictionary[0] > 16)
+                            if (longTouchDictionary[0].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
                             {
                                 ProcessNote(JudgementType.Miss);
                                 noteList.Remove(longTouchDictionary[0]);
+                                longTouchDictionary[0].DisplayJudgement(JudgementType.Miss);
                                 longTouchDictionary[0].gameObject.SetActive(false);
                                 longTouchDictionary.Remove(0);
-                                longTouchTimeDictionary.Remove(0);
+                                //longTouchTimeDictionary.Remove(0);
                             }
-                            else if (longTouchDictionary[0].beatLength - longTouchTimeDictionary[0] > 8)
+                            else if (longTouchDictionary[0].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
                             {
                                 ProcessNote(JudgementType.Normal);
                                 noteList.Remove(longTouchDictionary[0]);
+                                longTouchDictionary[0].DisplayJudgement(JudgementType.Normal);
                                 longTouchDictionary[0].gameObject.SetActive(false);
                                 longTouchDictionary.Remove(0);
-                                longTouchTimeDictionary.Remove(0);
+                                //longTouchTimeDictionary.Remove(0);
                             }
                             else
                             {
                                 ProcessNote(JudgementType.Perfect);
                                 noteList.Remove(longTouchDictionary[0]);
+                                longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
                                 longTouchDictionary[0].gameObject.SetActive(false);
                                 longTouchDictionary.Remove(0);
-                                longTouchTimeDictionary.Remove(0);
+                                //longTouchTimeDictionary.Remove(0);
                             }
                         }
                         else
                         {
-                            if (longTouchTimeDictionary[0] > longTouchDictionary[0].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8))
+                            if (longTouchDictionary[0].GetLastTime() < 0)
                             {
                                 //Debug.Log("adgh");
                                 ProcessNote(JudgementType.Perfect);
                                 noteList.Remove(longTouchDictionary[0]);
+                                longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
                                 longTouchDictionary[0].gameObject.SetActive(false);
                                 longTouchDictionary.Remove(0);
-                                longTouchTimeDictionary.Remove(0);
+                                //longTouchTimeDictionary.Remove(0);
                             }
                             else
                             {
                                 //Debug.Log("bcd");
-                                longTouchTimeDictionary[0] += Time.deltaTime;
+                                //longTouchTimeDictionary[0] += Time.deltaTime;
                             }
                         }
                     }
@@ -443,30 +459,33 @@ public class GameFrame : MonoBehaviour
                 {
                     if (longTouchDictionary.ContainsKey(0))
                     {
-                        Debug.Log("adghsgthjgk");
-                        if (longTouchDictionary[0].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[0] > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                        //Debug.Log("adghsgthjgk");
+                        if (longTouchDictionary[0].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
                         {
                             ProcessNote(JudgementType.Miss);
                             noteList.Remove(longTouchDictionary[0]);
+                            longTouchDictionary[0].DisplayJudgement(JudgementType.Miss);
                             longTouchDictionary[0].gameObject.SetActive(false);
                             longTouchDictionary.Remove(0);
-                            longTouchTimeDictionary.Remove(0);
+                            //longTouchTimeDictionary.Remove(0);
                         }
-                        else if (longTouchDictionary[0].beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) - longTouchTimeDictionary[0] > 2 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                        else if (longTouchDictionary[0].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
                         {
                             ProcessNote(JudgementType.Normal);
                             noteList.Remove(longTouchDictionary[0]);
+                            longTouchDictionary[0].DisplayJudgement(JudgementType.Normal);
                             longTouchDictionary[0].gameObject.SetActive(false);
                             longTouchDictionary.Remove(0);
-                            longTouchTimeDictionary.Remove(0);
+                            //longTouchTimeDictionary.Remove(0);
                         }
                         else
                         {
                             ProcessNote(JudgementType.Perfect);
                             noteList.Remove(longTouchDictionary[0]);
+                            longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
                             longTouchDictionary[0].gameObject.SetActive(false);
                             longTouchDictionary.Remove(0);
-                            longTouchTimeDictionary.Remove(0);
+                            //longTouchTimeDictionary.Remove(0);
                         }
                     }
                 }

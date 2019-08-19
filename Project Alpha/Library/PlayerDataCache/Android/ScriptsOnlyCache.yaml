@@ -4,6 +4,7 @@ ScriptsOnlyBuild:
     - ComboTextControl
     - GameFrame
     - InitializeManager
+    - JudgementObjectControl
     - Note
     - Parser
     - PauseControl
@@ -70,9 +71,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9942}
     - Class: 114
-      Script: {instanceID: 10296}
+      Script: {instanceID: 10298}
     - Class: 114
-      Script: {instanceID: 10456}
+      Script: {instanceID: 10458}
+    - Class: 114
+      Script: {instanceID: 17178}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -195,7 +198,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9432}
     - Class: 114
-      Script: {instanceID: 12140}
+      Script: {instanceID: 10264}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -801,7 +804,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: b9c0086ccfa6fa7df0b09a93ef7d07d5
+      Hash: d9ba99a0459222f846c2607c533d3bcb
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameFrame
@@ -945,7 +948,7 @@ ScriptsOnlyBuild:
     className: InitializeManager
   - hash:
       serializedVersion: 2
-      Hash: bbca691f2b213fced8140578bc9bf578
+      Hash: ddb1114eb323849688c24c0149743a72
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GamePlayManager
@@ -967,6 +970,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: AudioTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 9d362073d803ad0a8f9acfd876c992bd
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SettingManager
   - hash:
       serializedVersion: 2
       Hash: 7c91d8cdc7285f9445057ff9261c8f26
@@ -999,7 +1008,7 @@ ScriptsOnlyBuild:
     className: TMP_ColorGradient
   - hash:
       serializedVersion: 2
-      Hash: 6e059ca3687e6260271ee44ede710fd1
+      Hash: 2759131618195533e2111336e0b267c4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Parser
@@ -1023,10 +1032,10 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 9d362073d803ad0a8f9acfd876c992bd
+      Hash: 97f6461af149e07cf7b95ade79ce6f0e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: SettingManager
+    className: JudgementObjectControl
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity
