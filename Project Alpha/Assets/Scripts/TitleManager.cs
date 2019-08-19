@@ -16,13 +16,21 @@ public class TitleManager : MonoBehaviour
 
         if (Input.touchCount > 0)
         {
-            // 씬 넘어가기
-            SceneManager.LoadScene("SongSelect");
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (Input.GetTouch(i).phase == TouchPhase.Ended)
+                {
+                    // 씬 넘어가기
+                    SceneManager.LoadScene("SongSelect");
+                }
+            }
         }
 #endif
 #if UNITY_EDITOR_WIN
         if (Input.GetMouseButtonDown(0))
+        {
             SceneManager.LoadScene("SongSelect");
+        }
 #endif
     }
 }
