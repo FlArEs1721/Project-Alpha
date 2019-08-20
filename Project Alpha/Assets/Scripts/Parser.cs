@@ -11,6 +11,7 @@ public class Parser : MonoBehaviour
     public GameObject touchNotePrefab;
     public GameObject slideNotePrefab;
     public GameObject longNotePrefab;
+    public GameObject longNoteDummyPrefab;
     public GameObject judgementObjectPrefab;
     public TextAsset scoreData;
 
@@ -177,18 +178,24 @@ public class Parser : MonoBehaviour
                             {
                                 case 0:
                                     GamePlayManager.Instance.CreateNote(NoteType.Touch, touchNotePrefab, judgementObjectPrefab);
+                                    GamePlayManager.Instance.maxNoteCount++;
                                     break;
                                 case 1:
                                     GamePlayManager.Instance.CreateNote(NoteType.Slide, slideNotePrefab, judgementObjectPrefab);
+                                    GamePlayManager.Instance.maxNoteCount++;
                                     break;
                                 case 2:
-                                    GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
+                                    //GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
                                     // 박자단위 길이
                                     playDataList[i][j].data[3] = float.Parse(tempArray[4]);
+                                    for (int k = 0; k < Mathf.CeilToInt(playDataList[i][j].data[3] / 4); k++)
+                                    {
+                                        GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
+                                        GamePlayManager.Instance.maxNoteCount++;
+                                    }
+                                    GamePlayManager.Instance.CreateLongDummyNote(longNoteDummyPrefab);
                                     break;
                             }
-
-                            GamePlayManager.Instance.maxNoteCount++;
                             break;
                         case 6:
                             playDataList[i][j].playType = PlayType.DeleteFrame;

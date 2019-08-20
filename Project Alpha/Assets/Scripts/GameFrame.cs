@@ -57,7 +57,7 @@ public class GameFrame : MonoBehaviour
 
     private float preTime = 5;
 
-    private Dictionary<int, Note> longTouchDictionary = new Dictionary<int, Note>();
+    //private Dictionary<int, Note> longTouchDictionary = new Dictionary<int, Note>();
 
     /// <summary>
     /// 매 프레임마다 실행
@@ -143,9 +143,15 @@ public class GameFrame : MonoBehaviour
                                         touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                         break;
                                     case NoteType.Long:
-                                        longTouchDictionary.Add(i, touchedNoteList1[targetIndex1]);
+                                        //longTouchDictionary.Add(i, touchedNoteList1[targetIndex1]);
                                         //longTouchTimeDictionary.Add(i, 0);
-                                        touchedNoteList1[targetIndex1].isTouching = true;
+                                        //touchedNoteList1[targetIndex1].isTouching = true;
+                                        if (!touchedNoteList1[targetIndex1].isProcessed) ProcessNote(judgement1);
+                                        // 처리 완료된 노트는 삭제
+                                        //Destroy(touchedNoteList[targetIndex].gameObject);
+                                        //noteList.Remove(touchedNoteList2[targetIndex2]);
+                                        //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                        touchedNoteList1[targetIndex1].isProcessed = true;
                                         break;
                                 }
                             }
@@ -154,6 +160,7 @@ public class GameFrame : MonoBehaviour
                         // 슬라이드 노트 처리
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
+                            /*
                             if (longTouchDictionary.ContainsKey(i))
                             {
                                 float touchPosX = longTouchDictionary[i].gameFrame.transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).x;
@@ -205,6 +212,7 @@ public class GameFrame : MonoBehaviour
                                     }
                                 }
                             }
+                            */
 
                             List<Note> touchedNoteList2 = new List<Note>();
                             int targetIndex2 = 0;
@@ -212,6 +220,8 @@ public class GameFrame : MonoBehaviour
                             foreach (Note note in noteList)
                             {
                                 if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
+                                    touchedNoteList2.Add(note);
+                                if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, tempTouch.position) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                                     touchedNoteList2.Add(note);
                             }
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
@@ -235,6 +245,7 @@ public class GameFrame : MonoBehaviour
                         // 롱 노트 뗄 때 처리
                         case TouchPhase.Ended:
                         case TouchPhase.Canceled:
+                            /*
                             if (longTouchDictionary.ContainsKey(i))
                             {
                                 if (longTouchDictionary[i].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
@@ -265,6 +276,7 @@ public class GameFrame : MonoBehaviour
                                     //longTouchTimeDictionary.Remove(i);
                                 }
                             }
+                            */
                             break;
                     }
                 }
@@ -365,15 +377,22 @@ public class GameFrame : MonoBehaviour
                                 touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                 break;
                             case NoteType.Long:
-                                longTouchDictionary.Add(0, touchedNoteList1[targetIndex1]);
+                                //longTouchDictionary.Add(0, touchedNoteList1[targetIndex1]);
                                 //longTouchTimeDictionary.Add(0, 0);
-                                touchedNoteList1[targetIndex1].isTouching = true;
+                                //touchedNoteList1[targetIndex1].isTouching = true;
+                                if (!touchedNoteList1[targetIndex1].isProcessed) ProcessNote(judgement1);
+                                // 처리 완료된 노트는 삭제
+                                //Destroy(touchedNoteList[targetIndex].gameObject);
+                                //noteList.Remove(touchedNoteList2[targetIndex2]);
+                                //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                touchedNoteList1[targetIndex1].isProcessed = true;
                                 break;
                         }
                     }
                 }
                 else if (Input.GetMouseButton(0))
                 {
+                    /*
                     if (longTouchDictionary.ContainsKey(0))
                     {
                         float touchPosX = longTouchDictionary[0].gameFrame.transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).x;
@@ -428,6 +447,7 @@ public class GameFrame : MonoBehaviour
                             }
                         }
                     }
+                    */
 
                     List<Note> touchedNoteList2 = new List<Note>();
                     int targetIndex2 = 0;
@@ -435,6 +455,8 @@ public class GameFrame : MonoBehaviour
                     foreach (Note note in noteList)
                     {
                         if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, Input.mousePosition) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
+                            touchedNoteList2.Add(note);
+                        if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, Input.mousePosition) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                             touchedNoteList2.Add(note);
                     }
                     // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
@@ -457,6 +479,7 @@ public class GameFrame : MonoBehaviour
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
+                    /*
                     if (longTouchDictionary.ContainsKey(0))
                     {
                         //Debug.Log("adghsgthjgk");
@@ -488,6 +511,7 @@ public class GameFrame : MonoBehaviour
                             //longTouchTimeDictionary.Remove(0);
                         }
                     }
+                    */
                 }
             }
         }
@@ -783,16 +807,46 @@ public class GameFrame : MonoBehaviour
     /// <summary>
     /// 화면 위에서 노트를 생성한다.
     /// </summary>
-    /// <param name="position">(게임프레임 중앙 기준) 노트 생성 위치</param>
     public void CreateNote(NoteType noteType, float xPosition, float beatLength = 0)
     {
-        //if (noteType == NoteType.Touch) return;
-        Note note = GamePlayManager.Instance.PullNote(noteType, noteLayer).GetComponent<Note>();
-        note.gameFrame = this;
-        note.noteType = noteType;
-        note.xPosition = xPosition;
-        note.beatLength = beatLength;
-        note.Initiate();
+        if (noteType != NoteType.Long)
+        {
+            Note note = GamePlayManager.Instance.PullNote(noteType, noteLayer).GetComponent<Note>();
+            note.gameFrame = this;
+            note.noteType = noteType;
+            note.xPosition = xPosition;
+            note.Initiate();
+        }
+        else
+        {
+            LongNoteDummy longNoteDummy = GamePlayManager.Instance.PullLongNoteDummy(noteLayer).GetComponent<LongNoteDummy>();
+            longNoteDummy.gameFrame = this;
+            longNoteDummy.xPosition = xPosition;
+            longNoteDummy.beatLength = beatLength;
+            longNoteDummy.Initiate();
+
+            StartCoroutine(CreateLongNoteCoroutine(longNoteDummy, xPosition, beatLength));
+        }
+    }
+
+    private IEnumerator CreateLongNoteCoroutine(LongNoteDummy longNoteDummy, float xPosition, float beatLength)
+    {
+        for (int i = 0; i < Mathf.CeilToInt(beatLength / 4); i++)
+        {
+            Note note = GamePlayManager.Instance.PullNote(NoteType.Long, noteLayer).GetComponent<Note>();
+            note.gameFrame = this;
+            note.noteType = NoteType.Long;
+            note.xPosition = xPosition;
+            note.dummyNote = longNoteDummy;
+            note.index = i + 1;
+            longNoteDummy.mainNoteList.Add(note);
+            note.Initiate();
+
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     /// <summary>

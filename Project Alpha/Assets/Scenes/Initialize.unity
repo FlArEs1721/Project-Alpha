@@ -232,12 +232,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95f5c00200dde184dae9ee5fd45f83f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  noteSpeed: 5
+  calibration: 0.12
   songTitle: 
   songDifficulty: 
+  songDifficultyLevel: 
   currentPackIndex: 0
   currentSongIndex: 0
   currentDifficulty: 2
   songPlayed: 0
+  results:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
 --- !u!4 &1282782677
 Transform:
   m_ObjectHideFlags: 0

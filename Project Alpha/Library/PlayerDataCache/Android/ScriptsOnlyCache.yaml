@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     - GameFrame
     - InitializeManager
     - JudgementObjectControl
+    - LongNoteDummy
     - Note
     - Parser
     - PauseControl
@@ -76,6 +77,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 10300}
     - Class: 114
       Script: {instanceID: 10460}
+    - Class: 114
+      Script: {instanceID: 11638}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -870,7 +873,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: f851265dc0b148290f12c524c4bff685
+      Hash: 292d04a7838dfba270bf2f11c0a52b28
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Note
@@ -954,7 +957,7 @@ ScriptsOnlyBuild:
     className: InitializeManager
   - hash:
       serializedVersion: 2
-      Hash: ddb1114eb323849688c24c0149743a72
+      Hash: 1584e0c7e3735322517d33ca7d63c2e2
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GamePlayManager
@@ -1014,7 +1017,7 @@ ScriptsOnlyBuild:
     className: TMP_ColorGradient
   - hash:
       serializedVersion: 2
-      Hash: 2759131618195533e2111336e0b267c4
+      Hash: f64e7415e0cc60ee5a97efdd8718e174
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Parser
@@ -1036,6 +1039,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 3653e866f616c6edce73e466fced26e4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LongNoteDummy
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity

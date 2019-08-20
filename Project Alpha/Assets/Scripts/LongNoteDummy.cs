@@ -1,68 +1,38 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class Note : MonoBehaviour
+public class LongNoteDummy : MonoBehaviour
 {
     [HideInInspector]
     public GameFrame gameFrame;
 
     [HideInInspector]
-    public LongNoteDummy dummyNote = null;
-
-    /// <summary>
-    /// 노트 타입
-    /// </summary>
+    public float xPosition;
     [HideInInspector]
-    public NoteType noteType;
-
-    /// <summary>
-    /// 노트 크기
-    /// </summary>
+    public float yPosition;
     [HideInInspector]
     public float noteXSize;
     [HideInInspector]
     public float noteYSize;
-    /// <summary>
-    /// 노트의 생성 위치 x좌표
-    /// </summary>
-    [HideInInspector]
-    public float xPosition;
-    /// <summary>
-    /// 노트의 y좌표
-    /// </summary>
-    [HideInInspector]
-    public float yPosition;
-    /// <summary>
-    /// (롱노트에만 해당) 노트의 박자 단위 길이
-    /// </summary>
+
     [HideInInspector]
     public float beatLength;
 
     [HideInInspector]
+    public List<Note> mainNoteList = new List<Note>();
+
+    [HideInInspector]
     public bool isCreated = false;
 
-    [HideInInspector]
-    public bool isProcessed = false;
-
-    [HideInInspector]
-    public int index = 0;
-
-    /// <summary>
-    /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
-    /// </summary>
     public void Initiate()
     {
         noteXSize = gameFrame.noteXSize;
-        //noteYSize = (beatLength == 0) ? GameFrame.JudgementLineWidth : beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
-        noteYSize = GameFrame.JudgementLineWidth;
+        noteYSize = beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         yPosition = (5f + GamePlayManager.Instance.calibration) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
-        //yPosition = 800f;
-        gameFrame.noteList.Add(this);
         isCreated = true;
     }
 
-    /// <summary>
-    /// 매 프레임마다 실행
-    /// </summary>
     private void Update()
     {
         if (isCreated)
@@ -171,137 +141,22 @@ public class Note : MonoBehaviour
 
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-            // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < (-0.25f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed))
-            {
-                gameFrame.ProcessNote(JudgementType.Miss);
-                gameFrame.noteList.Remove(this);
-                //Destroy(gameObject);
-                DisplayJudgement(JudgementType.Miss);
-
-                if (dummyNote != null)
-                {
-                    dummyNote.DeleteNote();
-                }
-
-                gameObject.SetActive(false);
-            }
-
-            if (yPosition <= 1f && isProcessed)
-            {
-                gameFrame.noteList.Remove(this);
-                DisplayJudgement(JudgementType.Perfect);
-                gameObject.SetActive(false);
-            }
-
             // 노트 낙하
             yPosition -= GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed * Time.deltaTime;
         }
     }
 
-    public JudgementType Judgement(NoteType noteType)
+    public void DeleteNote()
     {
-        // 오차 시간 (ms 단위)
-        float mistakeTime = Utility.GetMistakeTime(GamePlayManager.Instance.noteSpeed, yPosition);
-
-        // bpm이 160보다 크다면 160으로 조정
-        // bpm이 120보다 작다면 120으로 조정
-        float bpm = GamePlayManager.Instance.bpm;
-        if (bpm > 160) bpm = 160;
-        else if (bpm < 120) bpm = 120;
-
-        // x = 16분음표의 길이 시간 (ms 단위)
-        float x = ((60 / bpm) / 4) * 1000;
-
-        switch (noteType)
+        foreach (Note note in mainNoteList)
         {
-            case NoteType.Touch:
-                // 오차 시간이 (0.8)x 이하인 경우 Perfect
-                // 오차 시간이 (2.5)x 이하인 경우 Normal
-                // 오차 시간이 그 초과인 경우 Miss
-                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
-                //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
-                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
-                else return JudgementType.Perfect;
-            case NoteType.Slide:
-                // 오차 시간이 x 이상인 경우 해당 입력은 무시
-                // 아니면 Perfect
-                if (mistakeTime > x) return JudgementType.Ignore;
-                else return JudgementType.Perfect;
-            case NoteType.Long:
-                // 오차 시간이 x 이상인 경우 해당 입력은 무시
-                //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > x) return JudgementType.Ignore;
-                else return JudgementType.Perfect;
+            if (note.gameObject.activeSelf)
+            {
+                gameFrame.ProcessNote(JudgementType.Miss);
+                gameFrame.noteList.Remove(note);
+                note.gameObject.SetActive(false);
+            }
         }
-
-        return JudgementType.Ignore;
+        gameObject.SetActive(false);
     }
-
-    public JudgementType JudgementPerfect()
-    {
-        if (Mathf.Abs(yPosition) < 2) return JudgementType.Perfect;
-        else return JudgementType.Ignore;
-    }
-
-    /*
-    public float GetLastTime()
-    {
-        if (noteType == NoteType.Long)
-        {
-            //Debug.Log((noteYSize + yPosition) / (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed));
-            return (noteYSize + yPosition) / (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed);
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    */
-
-    public void DisplayJudgement(JudgementType judgement, float preTime = 0)
-    {
-        GameObject judgementObj = GamePlayManager.Instance.PullJudgementObject(gameFrame.judgementLayer);
-        judgementObj.transform.localEulerAngles = new Vector3(0, 0, 0);
-        switch (judgement)
-        {
-            case JudgementType.Perfect:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 135f / 255f, 1);
-                break;
-            case JudgementType.Normal:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0);
-                break;
-            case JudgementType.Miss:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(1, 51f / 255f, 0);
-                break;
-        }
-        judgementObj.transform.localScale = new Vector3(noteXSize, GameFrame.JudgementLineWidth, 1);
-        judgementObj.transform.localPosition = new Vector3(xPosition, -(gameFrame.frameSize.y / 2) + (GameFrame.JudgementLineWidth / 2), 0);
-        judgementObj.GetComponent<JudgementObjectControl>().Initialize();
-    }
-}
-
-/// <summary>
-/// 노트 판정 종류
-/// </summary>
-public enum JudgementType
-{
-    /// <summary>
-    /// Perfect 판정
-    /// </summary>
-    Perfect,
-    /// <summary>
-    /// Normal 판정 (타 게임의 Good과 동일)
-    /// </summary>
-    Normal,
-    /// <summary>
-    /// Miss 판정
-    /// </summary>
-    Miss,
-    /// <summary>
-    /// 너무 일찍 터치한 경우 터치하지 않은 것으로 간주(무시)
-    /// </summary>
-    Ignore
 }

@@ -59,6 +59,8 @@ public class GamePlayManager : Singleton<GamePlayManager>
     [HideInInspector]
     public List<GameObject> longNotePool = new List<GameObject>();
     [HideInInspector]
+    public List<GameObject> longNoteDummyPool = new List<GameObject>();
+    [HideInInspector]
     public List<GameObject> judgementObjectPool = new List<GameObject>();
 
     public void CreateNote(NoteType noteType, GameObject notePrefab, GameObject judgementPrefab)
@@ -90,6 +92,14 @@ public class GamePlayManager : Singleton<GamePlayManager>
         judgementObjectPool.Add(judgementObj);
     }
 
+    public void CreateLongDummyNote(GameObject prefab)
+    {
+        GameObject note = null;
+        note = Instantiate(prefab, this.transform);
+        note.SetActive(false);
+        longNoteDummyPool.Add(note);
+    }
+
     public GameObject PullNote(NoteType noteType, GameObject noteLayer)
     {
         GameObject note = null;
@@ -115,6 +125,15 @@ public class GamePlayManager : Singleton<GamePlayManager>
                 return note;
         }
         return null;
+    }
+
+    public GameObject PullLongNoteDummy(GameObject noteLayer)
+    {
+        GameObject note = longNoteDummyPool[0];
+        longNoteDummyPool.RemoveAt(0);
+        note.transform.SetParent(noteLayer.transform);
+        note.SetActive(true);
+        return note;
     }
 
     public GameObject PullJudgementObject(GameObject judgementLayer)
