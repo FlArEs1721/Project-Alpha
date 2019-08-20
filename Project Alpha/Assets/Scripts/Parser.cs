@@ -169,6 +169,10 @@ public class Parser : MonoBehaviour
                             // 생성 x좌표
                             playDataList[i][j].data[2] = float.Parse(tempArray[3]);
 
+                            for (int k = 0; k < j; k++)
+                                if (playDataList[i][j].data[1] == playDataList[i][k].data[1] && playDataList[i][j].data[3] == playDataList[i][k].data[3])
+                                    continue;
+
                             switch (int.Parse(tempArray[2]))
                             {
                                 case 0:
