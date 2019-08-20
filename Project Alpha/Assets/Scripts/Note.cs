@@ -206,14 +206,14 @@ public class Note : MonoBehaviour
         switch (noteType)
         {
             case NoteType.Touch:
-                // 오차 시간이 x 이하인 경우 Perfect
+                // 오차 시간이 (0.8)x 이하인 경우 Perfect
                 // 오차 시간이 (3)x 이하인 경우 Normal
                 // 오차 시간이 그 초과인 경우 Miss
                 // 오차 시간이 (5)x 이상인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
                 if (mistakeTime > 5f * x) return JudgementType.Ignore;
                 else if (mistakeTime > 3f * x) return JudgementType.Miss;
-                else if (mistakeTime > x) return JudgementType.Normal;
+                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
             case NoteType.Slide:
                 // 오차 시간이 x 이상인 경우 해당 입력은 무시
