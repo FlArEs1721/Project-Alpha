@@ -76,9 +76,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10300}
     - Class: 114
-      Script: {instanceID: 10460}
+      Script: {instanceID: 10420}
     - Class: 114
-      Script: {instanceID: 11638}
+      Script: {instanceID: 10462}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1005,6 +1005,12 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: 3653e866f616c6edce73e466fced26e4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LongNoteDummy
+  - hash:
+      serializedVersion: 2
       Hash: 5372ed2ce39229b1ac910757999a8be2
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -1039,12 +1045,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 3653e866f616c6edce73e466fced26e4
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: LongNoteDummy
   platform: 13
   scenePathNames:
   - Assets/Scenes/Initialize.unity
