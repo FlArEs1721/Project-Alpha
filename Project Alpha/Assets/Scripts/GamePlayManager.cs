@@ -25,7 +25,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
     public const float NoteTouchExtraSizeX = 30f;
 
     [HideInInspector]
-    public const float NoteTouchExtraSizeY = 150f;
+    public const float NoteTouchExtraSizeY = 250f;
 
     [HideInInspector]
     //public float score = 0;
@@ -61,6 +61,10 @@ public class GamePlayManager : Singleton<GamePlayManager>
     [HideInInspector]
     public List<GameObject> longNoteDummyPool = new List<GameObject>();
     [HideInInspector]
+    public List<GameObject>upFlickNotePool = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> downFlickNotePool = new List<GameObject>();
+    [HideInInspector]
     public List<GameObject> judgementObjectPool = new List<GameObject>();
 
     public void CreateNote(NoteType noteType, GameObject notePrefab, GameObject judgementPrefab)
@@ -84,6 +88,16 @@ public class GamePlayManager : Singleton<GamePlayManager>
                 note = Instantiate(notePrefab, this.transform);
                 note.SetActive(false);
                 longNotePool.Add(note);
+                break;
+            case NoteType.UpFlick:
+                note = Instantiate(notePrefab, this.transform);
+                note.SetActive(false);
+                upFlickNotePool.Add(note);
+                break;
+            case NoteType.DownFlick:
+                note = Instantiate(notePrefab, this.transform);
+                note.SetActive(false);
+                downFlickNotePool.Add(note);
                 break;
         }
 
@@ -120,6 +134,18 @@ public class GamePlayManager : Singleton<GamePlayManager>
             case NoteType.Long:
                 note = longNotePool[0];
                 longNotePool.RemoveAt(0);
+                note.transform.SetParent(noteLayer.transform);
+                note.SetActive(true);
+                return note;
+            case NoteType.UpFlick:
+                note = upFlickNotePool[0];
+                upFlickNotePool.RemoveAt(0);
+                note.transform.SetParent(noteLayer.transform);
+                note.SetActive(true);
+                return note;
+            case NoteType.DownFlick:
+                note = downFlickNotePool[0];
+                downFlickNotePool.RemoveAt(0);
                 note.transform.SetParent(noteLayer.transform);
                 note.SetActive(true);
                 return note;

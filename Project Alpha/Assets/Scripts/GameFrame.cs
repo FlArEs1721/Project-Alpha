@@ -57,8 +57,6 @@ public class GameFrame : MonoBehaviour
 
     private float preTime = 5;
 
-    //private Dictionary<int, Note> longTouchDictionary = new Dictionary<int, Note>();
-
     /// <summary>
     /// 매 프레임마다 실행
     /// </summary>
@@ -75,15 +73,6 @@ public class GameFrame : MonoBehaviour
         judgementLine.transform.localPosition = new Vector3(0, -(frameSize.y / 2f) + (JudgementLineWidth / 2), -1);
         judgementLine.transform.localScale = new Vector3(frameSize.x, JudgementLineWidth, 1);
         noteLayer.transform.localPosition = new Vector3(0, -(frameSize.y / 2f) + (JudgementLineWidth / 2), -0.5f);
-
-        //게임프레임 크기 변화에 따른 노트들의 위치 변화 적용
-        //float temp = (frameSize.y - preFrameSize.y) / 2;
-        //foreach (Note note in noteList)
-        //{
-        //    Vector3 pos = note.transform.localPosition;
-        //    note.transform.localPosition = new Vector3(pos.x, pos.y - temp, 0);
-        //}
-        //noteLayer.transform.localPosition = new Vector3(0, -(frameSize.y / 2), 0);
 
 #if UNITY_ANDROID
         // 터치를 받아와 noteList에 있는 노트들 처리
@@ -114,11 +103,19 @@ public class GameFrame : MonoBehaviour
                                 // 롱 노트
                                 if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, tempTouch.position) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
+                                // 위 플릭 노트
+                                if (note.noteType == NoteType.UpFlick && IsTouchedNote(NoteType.UpFlick, note, tempTouch.position) && note.Judgement(NoteType.UpFlick) != JudgementType.Ignore)
+                                    touchedNoteList1.Add(note);
+                                // 아래 플릭 노트
+                                if (note.noteType == NoteType.DownFlick && IsTouchedNote(NoteType.DownFlick, note, tempTouch.position) && note.Judgement(NoteType.DownFlick) != JudgementType.Ignore)
+                                    touchedNoteList1.Add(note);
                             }
+
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList1.Count; j++)
                                 if (touchedNoteList1[j].yPosition >= -JudgementLineWidth && touchedNoteList1[targetIndex1].yPosition > touchedNoteList1[j].yPosition)
                                     targetIndex1 = j;
+
                             // 노트 처리
                             JudgementType judgement1 = touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType);
                             if (judgement1 == JudgementType.Ignore) break;
@@ -143,15 +140,30 @@ public class GameFrame : MonoBehaviour
                                         touchedNoteList1[targetIndex1].gameObject.SetActive(false);
                                         break;
                                     case NoteType.Long:
-                                        //longTouchDictionary.Add(i, touchedNoteList1[targetIndex1]);
-                                        //longTouchTimeDictionary.Add(i, 0);
-                                        //touchedNoteList1[targetIndex1].isTouching = true;
                                         if (!touchedNoteList1[targetIndex1].isProcessed) ProcessNote(judgement1);
                                         // 처리 완료된 노트는 삭제
                                         //Destroy(touchedNoteList[targetIndex].gameObject);
                                         //noteList.Remove(touchedNoteList2[targetIndex2]);
                                         //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                         touchedNoteList1[targetIndex1].isProcessed = true;
+                                        break;
+                                    case NoteType.UpFlick:
+                                        // 노트 처리
+                                        if (!touchedNoteList1[targetIndex1].isFlicking)
+                                        {
+                                            touchedNoteList1[targetIndex1].isFlicking = true;
+                                            touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList1[targetIndex1].touchScreenYPos = tempTouch.position.y;
+                                        }
+                                        break;
+                                    case NoteType.DownFlick:
+                                        // 노트 처리
+                                        if (!touchedNoteList1[targetIndex1].isFlicking)
+                                        {
+                                            touchedNoteList1[targetIndex1].isFlicking = true;
+                                            touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList1[targetIndex1].touchScreenYPos = tempTouch.position.y;
+                                        }
                                         break;
                                 }
                             }
@@ -160,62 +172,10 @@ public class GameFrame : MonoBehaviour
                         // 슬라이드 노트 처리
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
-                            /*
-                            if (longTouchDictionary.ContainsKey(i))
-                            {
-                                float touchPosX = longTouchDictionary[i].gameFrame.transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).x;
-                                // 터치 위치가 롱노트를 벗어났을 경우
-                                if (touchPosX < longTouchDictionary[i].xPosition - (longTouchDictionary[i].noteXSize / 2) - GamePlayManager.NoteTouchExtraSizeX || touchPosX > longTouchDictionary[i].xPosition + (longTouchDictionary[i].noteXSize / 2) + GamePlayManager.NoteTouchExtraSizeX)
-                                {
-                                    if (longTouchDictionary[i].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                                    {
-                                        ProcessNote(JudgementType.Miss);
-                                        noteList.Remove(longTouchDictionary[i]);
-                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Miss);
-                                        longTouchDictionary[i].gameObject.SetActive(false);
-                                        longTouchDictionary.Remove(i);
-                                        //longTouchTimeDictionary.Remove(i);
-                                    }
-                                    else if (longTouchDictionary[i].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                                    {
-                                        ProcessNote(JudgementType.Normal);
-                                        noteList.Remove(longTouchDictionary[i]);
-                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Normal);
-                                        longTouchDictionary[i].gameObject.SetActive(false);
-                                        longTouchDictionary.Remove(i);
-                                        //longTouchTimeDictionary.Remove(i);
-                                    }
-                                    else
-                                    {
-                                        ProcessNote(JudgementType.Perfect);
-                                        noteList.Remove(longTouchDictionary[i]);
-                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
-                                        longTouchDictionary[i].gameObject.SetActive(false);
-                                        longTouchDictionary.Remove(i);
-                                        //longTouchTimeDictionary.Remove(i);
-                                    }
-                                }
-                                else
-                                {
-                                    if (longTouchDictionary[i].GetLastTime() < 0)
-                                    {
-                                        ProcessNote(JudgementType.Perfect);
-                                        noteList.Remove(longTouchDictionary[i]);
-                                        longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
-                                        longTouchDictionary[i].gameObject.SetActive(false);
-                                        longTouchDictionary.Remove(i);
-                                        //longTouchTimeDictionary.Remove(i);
-                                    }
-                                    else
-                                    {
-                                        //longTouchTimeDictionary[i] += Time.deltaTime;
-                                    }
-                                }
-                            }
-                            */
-
                             List<Note> touchedNoteList2 = new List<Note>();
+                            List<Note> touchedNoteList3 = new List<Note>();
                             int targetIndex2 = 0;
+                            int targetIndex3 = 0;
                             // 터치 가능한 노트를 리스트에 담음
                             foreach (Note note in noteList)
                             {
@@ -223,16 +183,26 @@ public class GameFrame : MonoBehaviour
                                     touchedNoteList2.Add(note);
                                 if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, tempTouch.position) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                                     touchedNoteList2.Add(note);
+                                if (note.noteType == NoteType.UpFlick && IsTouchedNote(NoteType.UpFlick, note, tempTouch.position) && note.Judgement(NoteType.UpFlick) != JudgementType.Ignore)
+                                    touchedNoteList3.Add(note);
+                                if (note.noteType == NoteType.DownFlick && IsTouchedNote(NoteType.DownFlick, note, tempTouch.position) && note.Judgement(NoteType.DownFlick) != JudgementType.Ignore)
+                                    touchedNoteList3.Add(note);
                             }
+
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList2.Count; j++)
                                 if (touchedNoteList2[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
                                     targetIndex2 = j;
-                            // 노트 처리
-                            JudgementType judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
-                            if (judgement2 == JudgementType.Ignore) break;
+                            for (int j = 1; j < touchedNoteList3.Count; j++)
+                                if (touchedNoteList3[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList3[targetIndex3].yPosition > touchedNoteList3[j].yPosition)
+                                    targetIndex3 = j;
+
+                            
                             if (touchedNoteList2.Count > 0)
                             {
+                                // 노트 처리
+                                JudgementType judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
+                                if (judgement2 == JudgementType.Ignore) break;
                                 if (!touchedNoteList2[targetIndex2].isProcessed) ProcessNote(judgement2);
                                 // 처리 완료된 노트는 삭제
                                 //Destroy(touchedNoteList[targetIndex].gameObject);
@@ -240,43 +210,60 @@ public class GameFrame : MonoBehaviour
                                 //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                 touchedNoteList2[targetIndex2].isProcessed = true;
                             }
-                            break;
 
-                        // 롱 노트 뗄 때 처리
-                        case TouchPhase.Ended:
-                        case TouchPhase.Canceled:
-                            /*
-                            if (longTouchDictionary.ContainsKey(i))
+                            if (touchedNoteList3.Count > 0/* && touchedNoteList3[targetIndex3].touchIndex == tempTouch.fingerId*/)
                             {
-                                if (longTouchDictionary[i].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
+                                switch (touchedNoteList3[targetIndex3].noteType)
                                 {
-                                    ProcessNote(JudgementType.Miss);
-                                    noteList.Remove(longTouchDictionary[i]);
-                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Miss);
-                                    longTouchDictionary[i].gameObject.SetActive(false);
-                                    longTouchDictionary.Remove(i);
-                                    //longTouchTimeDictionary.Remove(i);
-                                }
-                                else if (longTouchDictionary[i].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                                {
-                                    ProcessNote(JudgementType.Normal);
-                                    noteList.Remove(longTouchDictionary[i]);
-                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Normal);
-                                    longTouchDictionary[i].gameObject.SetActive(false);
-                                    longTouchDictionary.Remove(i);
-                                    //longTouchTimeDictionary.Remove(i);
-                                }
-                                else
-                                {
-                                    ProcessNote(JudgementType.Perfect);
-                                    noteList.Remove(longTouchDictionary[i]);
-                                    longTouchDictionary[i].DisplayJudgement(JudgementType.Perfect);
-                                    longTouchDictionary[i].gameObject.SetActive(false);
-                                    longTouchDictionary.Remove(i);
-                                    //longTouchTimeDictionary.Remove(i);
+                                    case NoteType.UpFlick:
+                                        if (touchedNoteList3[targetIndex3].isFlicking)
+                                        {
+                                            if (tempTouch.position.y > touchedNoteList3[targetIndex3].touchScreenYPos + GameFrame.JudgementLineWidth)
+                                            {
+                                                JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                                if (judgement3 == JudgementType.Ignore) break;
+
+                                                ProcessNote(judgement3);
+                                                noteList.Remove(touchedNoteList3[targetIndex3]);
+                                                touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
+                                                touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            touchedNoteList3[targetIndex3].isFlicking = true;
+                                            touchedNoteList3[targetIndex3].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList3[targetIndex3].touchScreenYPos = tempTouch.position.y;
+                                        }
+                                        break;
+                                    case NoteType.DownFlick:
+                                        if (touchedNoteList3[targetIndex3].isFlicking)
+                                        {
+                                            if (tempTouch.position.y < touchedNoteList3[targetIndex3].touchScreenYPos - GameFrame.JudgementLineWidth)
+                                            {
+                                                JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                                if (judgement3 == JudgementType.Ignore) break;
+
+                                                ProcessNote(judgement3);
+                                                noteList.Remove(touchedNoteList3[targetIndex3]);
+                                                touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
+                                                touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            touchedNoteList3[targetIndex3].isFlicking = true;
+                                            touchedNoteList3[targetIndex3].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList3[targetIndex3].touchScreenYPos = tempTouch.position.y;
+                                        }
+                                        break;
                                 }
                             }
-                            */
+                            break;
+
+                        // 터치 뗄 때 처리
+                        case TouchPhase.Ended:
+                        case TouchPhase.Canceled:
                             break;
                     }
                 }
@@ -284,45 +271,6 @@ public class GameFrame : MonoBehaviour
                 {
                     continue;
                 }
-
-
-
-                //List<Note> touchedNoteList = new List<Note>();
-                //int targetIndex = 0;
-                //// 터치 가능한 노트를 리스트에 담음
-                //foreach (Note note in noteList)
-                //{
-                //    if (note.noteType == NoteType.Touch && IsTouchedNote(NoteType.Touch, note.transform.position, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
-                //        touchedNoteList.Add(note);
-                //    if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note.transform.position, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
-                //        touchedNoteList.Add(note);
-                //}
-                //// 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
-                //for (int j = 1; j < touchedNoteList.Count; j++)
-                //    if (touchedNoteList[targetIndex].yPosition > touchedNoteList[j].yPosition)
-                //        targetIndex = j;
-                //if (touchedNoteList[targetIndex].Judgement(touchedNoteList[targetIndex].noteType) == JudgementType.Ignore) break;
-                //if (touchedNoteList[targetIndex].noteType == NoteType.Touch && tempTouch.phase != TouchPhase.Began) break;
-                //// 노트 처리
-                //ProcessNote(/*touchedNoteList[targetIndex].Judgement(touchedNoteList[targetIndex].noteType)*/JudgementType.Perfect);
-                //// 처리 완료된 노트는 삭제
-                ////Destroy(touchedNoteList[targetIndex].gameObject);
-                //noteList.Remove(touchedNoteList[targetIndex]);
-                //touchedNoteList[targetIndex].gameObject.SetActive(false);
-
-                // 슬라이드 노트 처리
-                /*
-                foreach (var note in noteList)
-                {
-                    JudgementType judgement = note.Judgement(NoteType.Slide);
-                    if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note.transform.position, tempTouch.position) && judgement != JudgementType.Ignore)
-                    {
-                        ProcessNote(judgement);
-                        noteList.Remove(note);
-                        note.gameObject.SetActive(false);
-                    }
-                }
-                */
             }
         }
 #endif
@@ -346,6 +294,12 @@ public class GameFrame : MonoBehaviour
                             touchedNoteList1.Add(note);
                         // 롱 노트
                         if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, Input.mousePosition) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
+                            touchedNoteList1.Add(note);
+                        // 위 플릭 노트
+                        if (note.noteType == NoteType.UpFlick && IsTouchedNote(NoteType.UpFlick, note, Input.mousePosition) && note.Judgement(NoteType.UpFlick) != JudgementType.Ignore)
+                            touchedNoteList1.Add(note);
+                        // 아래 플릭 노트
+                        if (note.noteType == NoteType.DownFlick && IsTouchedNote(NoteType.DownFlick, note, Input.mousePosition) && note.Judgement(NoteType.DownFlick) != JudgementType.Ignore)
                             touchedNoteList1.Add(note);
                     }
                     // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
@@ -387,70 +341,33 @@ public class GameFrame : MonoBehaviour
                                 //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                 touchedNoteList1[targetIndex1].isProcessed = true;
                                 break;
+                            case NoteType.UpFlick:
+                                // 노트 처리
+                                if (!touchedNoteList1[targetIndex1].isFlicking)
+                                {
+                                    touchedNoteList1[targetIndex1].isFlicking = true;
+                                    touchedNoteList1[targetIndex1].touchIndex = 0;
+                                    touchedNoteList1[targetIndex1].touchScreenYPos = Input.mousePosition.y;
+                                }
+                                break;
+                            case NoteType.DownFlick:
+                                // 노트 처리
+                                if (!touchedNoteList1[targetIndex1].isFlicking)
+                                {
+                                    touchedNoteList1[targetIndex1].isFlicking = true;
+                                    touchedNoteList1[targetIndex1].touchIndex = 0;
+                                    touchedNoteList1[targetIndex1].touchScreenYPos = Input.mousePosition.y;
+                                }
+                                break;
                         }
                     }
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    /*
-                    if (longTouchDictionary.ContainsKey(0))
-                    {
-                        float touchPosX = longTouchDictionary[0].gameFrame.transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).x;
-                        // 터치 위치가 롱노트를 벗어났을 경우
-                        if (touchPosX < longTouchDictionary[0].xPosition - (longTouchDictionary[0].noteXSize / 2) - GamePlayManager.NoteTouchExtraSizeX || touchPosX > longTouchDictionary[0].xPosition + (longTouchDictionary[0].noteXSize / 2) + GamePlayManager.NoteTouchExtraSizeX)
-                        {
-                            //Debug.Log("a");
-                            if (longTouchDictionary[0].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                            {
-                                ProcessNote(JudgementType.Miss);
-                                noteList.Remove(longTouchDictionary[0]);
-                                longTouchDictionary[0].DisplayJudgement(JudgementType.Miss);
-                                longTouchDictionary[0].gameObject.SetActive(false);
-                                longTouchDictionary.Remove(0);
-                                //longTouchTimeDictionary.Remove(0);
-                            }
-                            else if (longTouchDictionary[0].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                            {
-                                ProcessNote(JudgementType.Normal);
-                                noteList.Remove(longTouchDictionary[0]);
-                                longTouchDictionary[0].DisplayJudgement(JudgementType.Normal);
-                                longTouchDictionary[0].gameObject.SetActive(false);
-                                longTouchDictionary.Remove(0);
-                                //longTouchTimeDictionary.Remove(0);
-                            }
-                            else
-                            {
-                                ProcessNote(JudgementType.Perfect);
-                                noteList.Remove(longTouchDictionary[0]);
-                                longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
-                                longTouchDictionary[0].gameObject.SetActive(false);
-                                longTouchDictionary.Remove(0);
-                                //longTouchTimeDictionary.Remove(0);
-                            }
-                        }
-                        else
-                        {
-                            if (longTouchDictionary[0].GetLastTime() < 0)
-                            {
-                                //Debug.Log("adgh");
-                                ProcessNote(JudgementType.Perfect);
-                                noteList.Remove(longTouchDictionary[0]);
-                                longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
-                                longTouchDictionary[0].gameObject.SetActive(false);
-                                longTouchDictionary.Remove(0);
-                                //longTouchTimeDictionary.Remove(0);
-                            }
-                            else
-                            {
-                                //Debug.Log("bcd");
-                                //longTouchTimeDictionary[0] += Time.deltaTime;
-                            }
-                        }
-                    }
-                    */
-
                     List<Note> touchedNoteList2 = new List<Note>();
+                    List<Note> touchedNoteList3 = new List<Note>();
                     int targetIndex2 = 0;
+                    int targetIndex3 = 0;
                     // 터치 가능한 노트를 리스트에 담음
                     foreach (Note note in noteList)
                     {
@@ -458,11 +375,20 @@ public class GameFrame : MonoBehaviour
                             touchedNoteList2.Add(note);
                         if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, Input.mousePosition) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                             touchedNoteList2.Add(note);
+                        if (note.noteType == NoteType.UpFlick && IsTouchedNote(NoteType.UpFlick, note, Input.mousePosition) && note.Judgement(NoteType.UpFlick) != JudgementType.Ignore)
+                            touchedNoteList3.Add(note);
+                        if (note.noteType == NoteType.DownFlick && IsTouchedNote(NoteType.DownFlick, note, Input.mousePosition) && note.Judgement(NoteType.DownFlick) != JudgementType.Ignore)
+                            touchedNoteList3.Add(note);
                     }
+
                     // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                     for (int j = 1; j < touchedNoteList2.Count; j++)
                         if (touchedNoteList2[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
                             targetIndex2 = j;
+                    for (int j = 1; j < touchedNoteList3.Count; j++)
+                        if (touchedNoteList3[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList3[targetIndex3].yPosition > touchedNoteList3[j].yPosition)
+                            targetIndex3 = j;
+
                     // 노트 처리
                     JudgementType judgement2 = JudgementType.Ignore;
                     if (touchedNoteList2.Count > 0)
@@ -476,42 +402,59 @@ public class GameFrame : MonoBehaviour
                         //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                         touchedNoteList2[targetIndex2].isProcessed = true;
                     }
+
+                    if (touchedNoteList3.Count > 0 && touchedNoteList3[targetIndex3].touchIndex == 0)
+                    {
+                        switch (touchedNoteList3[targetIndex3].noteType)
+                        {
+                            case NoteType.UpFlick:
+                                if (touchedNoteList3[targetIndex3].isFlicking)
+                                {
+                                    if (Input.mousePosition.y > touchedNoteList3[targetIndex3].touchScreenYPos + GameFrame.JudgementLineWidth)
+                                    {
+                                        JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                        if (judgement3 == JudgementType.Ignore) break;
+
+                                        ProcessNote(judgement3);
+                                        noteList.Remove(touchedNoteList3[targetIndex3]);
+                                        touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
+                                        touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                    }
+                                }
+                                else
+                                {
+                                    touchedNoteList3[targetIndex3].isFlicking = true;
+                                    touchedNoteList3[targetIndex3].touchIndex = 0;
+                                    touchedNoteList3[targetIndex3].touchScreenYPos = Input.mousePosition.y;
+                                }
+                                break;
+                            case NoteType.DownFlick:
+                                if (touchedNoteList3[targetIndex3].isFlicking)
+                                {
+                                    if (Input.mousePosition.y < touchedNoteList3[targetIndex3].touchScreenYPos - GameFrame.JudgementLineWidth)
+                                    {
+                                        JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                        if (judgement3 == JudgementType.Ignore) break;
+
+                                        ProcessNote(judgement3);
+                                        noteList.Remove(touchedNoteList3[targetIndex3]);
+                                        touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
+                                        touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                    }
+                                }
+                                else
+                                {
+                                    touchedNoteList3[targetIndex3].isFlicking = true;
+                                    touchedNoteList3[targetIndex3].touchIndex = 0;
+                                    touchedNoteList3[targetIndex3].touchScreenYPos = Input.mousePosition.y;
+                                }
+                                break;
+                        }
+                    }
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    /*
-                    if (longTouchDictionary.ContainsKey(0))
-                    {
-                        //Debug.Log("adghsgthjgk");
-                        if (longTouchDictionary[0].GetLastTime() > 16 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                        {
-                            ProcessNote(JudgementType.Miss);
-                            noteList.Remove(longTouchDictionary[0]);
-                            longTouchDictionary[0].DisplayJudgement(JudgementType.Miss);
-                            longTouchDictionary[0].gameObject.SetActive(false);
-                            longTouchDictionary.Remove(0);
-                            //longTouchTimeDictionary.Remove(0);
-                        }
-                        else if (longTouchDictionary[0].GetLastTime() > 12 * ((60 / GamePlayManager.Instance.bpm) / 8))
-                        {
-                            ProcessNote(JudgementType.Normal);
-                            noteList.Remove(longTouchDictionary[0]);
-                            longTouchDictionary[0].DisplayJudgement(JudgementType.Normal);
-                            longTouchDictionary[0].gameObject.SetActive(false);
-                            longTouchDictionary.Remove(0);
-                            //longTouchTimeDictionary.Remove(0);
-                        }
-                        else
-                        {
-                            ProcessNote(JudgementType.Perfect);
-                            noteList.Remove(longTouchDictionary[0]);
-                            longTouchDictionary[0].DisplayJudgement(JudgementType.Perfect);
-                            longTouchDictionary[0].gameObject.SetActive(false);
-                            longTouchDictionary.Remove(0);
-                            //longTouchTimeDictionary.Remove(0);
-                        }
-                    }
-                    */
+
                 }
             }
         }
@@ -551,6 +494,24 @@ public class GameFrame : MonoBehaviour
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x > -frameSize.x / 2 - GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x < note.xPosition + noteXSize / 2 + GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x > note.xPosition - noteXSize / 2 - GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y < judgementLine.transform.localPosition.y + (JudgementLineWidth / 2) + GamePlayManager.NoteTouchExtraSizeY
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y > judgementLine.transform.localPosition.y - (JudgementLineWidth / 2) - GamePlayManager.NoteTouchExtraSizeY)
+                    return true;
+                else return false;
+            case NoteType.UpFlick:
+                if (note.gameFrame.transform.InverseTransformPoint(touchPos).x < frameSize.x / 2 + GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x > -frameSize.x / 2 - GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x < note.xPosition + noteXSize + GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x > note.xPosition - noteXSize - GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y < judgementLine.transform.localPosition.y + (JudgementLineWidth / 2) + GamePlayManager.NoteTouchExtraSizeY
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y > judgementLine.transform.localPosition.y - (JudgementLineWidth / 2) - GamePlayManager.NoteTouchExtraSizeY)
+                    return true;
+                else return false;
+            case NoteType.DownFlick:
+                if (note.gameFrame.transform.InverseTransformPoint(touchPos).x < frameSize.x / 2 + GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x > -frameSize.x / 2 - GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x < note.xPosition + noteXSize + GamePlayManager.NoteTouchExtraSizeX
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).x > note.xPosition - noteXSize - GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).y < judgementLine.transform.localPosition.y + (JudgementLineWidth / 2) + GamePlayManager.NoteTouchExtraSizeY
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).y > judgementLine.transform.localPosition.y - (JudgementLineWidth / 2) - GamePlayManager.NoteTouchExtraSizeY)
                     return true;
@@ -898,7 +859,15 @@ public enum NoteType
     /// <summary>
     /// 롱 노트
     /// </summary>
-    Long
+    Long,
+    /// <summary>
+    /// 위 방향 플릭 노트
+    /// </summary>
+    UpFlick,
+    /// <summary>
+    /// 아래 방향 플릭 노트
+    /// </summary>
+    DownFlick
 }
 
 /// <summary>

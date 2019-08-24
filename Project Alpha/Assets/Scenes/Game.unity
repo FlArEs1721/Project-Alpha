@@ -842,6 +842,10 @@ MonoBehaviour:
     type: 3}
   longNoteDummyPrefab: {fileID: 4758961355012598946, guid: 5e63953e4b1d2af4b87e1105fa67c1e2,
     type: 3}
+  upFlickNotePrefab: {fileID: 6685144842836179346, guid: 9fd22a884783e6e439578f99f0edb256,
+    type: 3}
+  downFlickNotePrefab: {fileID: 2982612818805149369, guid: e0646e92ee071e4498bfd689365e7eb7,
+    type: 3}
   judgementObjectPrefab: {fileID: 7254837875708892987, guid: 5fbef580a92301e4f85bad87a45447e4,
     type: 3}
   scoreData: {fileID: 0}

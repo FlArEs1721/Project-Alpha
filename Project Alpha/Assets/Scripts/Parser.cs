@@ -12,6 +12,8 @@ public class Parser : MonoBehaviour
     public GameObject slideNotePrefab;
     public GameObject longNotePrefab;
     public GameObject longNoteDummyPrefab;
+    public GameObject upFlickNotePrefab;
+    public GameObject downFlickNotePrefab;
     public GameObject judgementObjectPrefab;
     public TextAsset scoreData;
 
@@ -195,6 +197,14 @@ public class Parser : MonoBehaviour
                                     }
                                     GamePlayManager.Instance.CreateLongDummyNote(longNoteDummyPrefab);
                                     break;
+                                case 3:
+                                    GamePlayManager.Instance.CreateNote(NoteType.UpFlick, upFlickNotePrefab, judgementObjectPrefab);
+                                    GamePlayManager.Instance.maxNoteCount++;
+                                    break;
+                                case 4:
+                                    GamePlayManager.Instance.CreateNote(NoteType.DownFlick, downFlickNotePrefab, judgementObjectPrefab);
+                                    GamePlayManager.Instance.maxNoteCount++;
+                                    break;
                             }
                             break;
                         case 6:
@@ -258,6 +268,8 @@ public class Parser : MonoBehaviour
                             // 단타노트, 슬라이드 노트
                             case 0:
                             case 1:
+                            case 3:
+                            case 4:
                                 gameFrameList[(int)temp.data[0]].CreateNote((NoteType)temp.data[1], temp.data[2]);
                                 break;
                             // 롱노트

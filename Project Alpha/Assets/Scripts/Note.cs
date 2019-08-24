@@ -44,7 +44,16 @@ public class Note : MonoBehaviour
     public bool isProcessed = false;
 
     [HideInInspector]
+    public bool isFlicking = false;
+
+    [HideInInspector]
     public int index = 0;
+
+    [HideInInspector]
+    public int touchIndex = -1;
+
+    [HideInInspector]
+    public float touchScreenYPos = 0;
 
     /// <summary>
     /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
@@ -187,7 +196,7 @@ public class Note : MonoBehaviour
                 gameObject.SetActive(false);
             }
 
-            if (yPosition <= 1f && isProcessed)
+            if (yPosition <= 0.5f && isProcessed)
             {
                 gameFrame.noteList.Remove(this);
                 DisplayJudgement(JudgementType.Perfect);
@@ -234,6 +243,26 @@ public class Note : MonoBehaviour
                 // 오차 시간이 x 이상인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
                 if (mistakeTime > x) return JudgementType.Ignore;
+                else return JudgementType.Perfect;
+            case NoteType.UpFlick:
+                // 오차 시간이 x 이하인 경우 Perfect
+                // 오차 시간이 (2.5)x 이하인 경우 Normal
+                // 오차 시간이 그 초과인 경우 Miss
+                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
+                //float absYPosition = Mathf.Abs(yPosition);
+                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
+                else if (mistakeTime > x) return JudgementType.Normal;
+                else return JudgementType.Perfect;
+            case NoteType.DownFlick:
+                // 오차 시간이 x 이하인 경우 Perfect
+                // 오차 시간이 (2.5)x 이하인 경우 Normal
+                // 오차 시간이 그 초과인 경우 Miss
+                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
+                //float absYPosition = Mathf.Abs(yPosition);
+                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
+                else if (mistakeTime > x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
         }
 
