@@ -226,13 +226,13 @@ public class Note : MonoBehaviour
         {
             case NoteType.Touch:
                 // 오차 시간이 (0.8)x 이하인 경우 Perfect
-                // 오차 시간이 (2.5)x 이하인 경우 Normal
+                // 오차 시간이 (1.5)x 이하인 경우 Normal
                 // 오차 시간이 그 초과인 경우 Miss
-                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
+                // 오차 시간이 (1.8)x 이상인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
-                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
+                if (mistakeTime > 1.8f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 1.5f * x) return JudgementType.Miss;
+                else if (mistakeTime > 0.8f * x) return JudgementType.Good;
                 else return JudgementType.Perfect;
             case NoteType.Slide:
                 // 오차 시간이 x 이상인 경우 해당 입력은 무시
@@ -245,22 +245,22 @@ public class Note : MonoBehaviour
                 if (mistakeTime > x) return JudgementType.Ignore;
                 else return JudgementType.Perfect;
             case NoteType.UpFlick:
-                // 오차 시간이 (0.8)x 이하인 경우 Perfect
+                // 오차 시간이 x 이하인 경우 Perfect
                 // 오차 시간이 (1.5)x 이하인 경우 Normal
-                // 오차 시간이 (2)x인 경우 해당 입력은 무시
+                // 오차 시간이 (1.8)x인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 2f * x) return JudgementType.Ignore;
+                if (mistakeTime > 1.8f * x) return JudgementType.Ignore;
                 else if (mistakeTime > 1.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
+                else if (mistakeTime > x) return JudgementType.Good;
                 else return JudgementType.Perfect;
             case NoteType.DownFlick:
-                // 오차 시간이 (0.8)x 이하인 경우 Perfect
-                // 오차 시간이 (1.5)x 이하인 경우 Normal
-                // 오차 시간이 (2)x인 경우 해당 입력은 무시
+                // 오차 시간이 x 이하인 경우 Perfect
+                // 오차 시간이 (1.3)x 이하인 경우 Normal
+                // 오차 시간이 (1.5)x인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 2f * x) return JudgementType.Ignore;
+                if (mistakeTime > 1.8f * x) return JudgementType.Ignore;
                 else if (mistakeTime > 1.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
+                else if (mistakeTime > x) return JudgementType.Good;
                 else return JudgementType.Perfect;
         }
 
@@ -297,7 +297,7 @@ public class Note : MonoBehaviour
             case JudgementType.Perfect:
                 judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 135f / 255f, 1);
                 break;
-            case JudgementType.Normal:
+            case JudgementType.Good:
                 judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0);
                 break;
             case JudgementType.Miss:
@@ -320,9 +320,9 @@ public enum JudgementType
     /// </summary>
     Perfect,
     /// <summary>
-    /// Normal 판정 (타 게임의 Good과 동일)
+    /// Good 판정
     /// </summary>
-    Normal,
+    Good,
     /// <summary>
     /// Miss 판정
     /// </summary>

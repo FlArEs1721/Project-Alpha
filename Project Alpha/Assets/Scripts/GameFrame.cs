@@ -219,15 +219,22 @@ public class GameFrame : MonoBehaviour
                                     case NoteType.UpFlick:
                                         if (touchedNoteList2[targetIndex2].isFlicking)
                                         {
-                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y + GameFrame.JudgementLineWidth)
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y)
                                             {
-                                                JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
-                                                if (judgement3 == JudgementType.Ignore) break;
+                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y + GameFrame.JudgementLineWidth)
+                                                {
+                                                    JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
+                                                    if (judgement3 == JudgementType.Ignore) break;
 
-                                                ProcessNote(judgement3);
-                                                noteList.Remove(touchedNoteList2[targetIndex2]);
-                                                touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
-                                                touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                                    ProcessNote(judgement3);
+                                                    noteList.Remove(touchedNoteList2[targetIndex2]);
+                                                    touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
+                                                    touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                             }
                                         }
                                         else
@@ -241,15 +248,22 @@ public class GameFrame : MonoBehaviour
                                     case NoteType.DownFlick:
                                         if (touchedNoteList2[targetIndex2].isFlicking)
                                         {
-                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y - GameFrame.JudgementLineWidth)
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y)
                                             {
-                                                JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
-                                                if (judgement3 == JudgementType.Ignore) break;
+                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y - GameFrame.JudgementLineWidth)
+                                                {
+                                                    JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
+                                                    if (judgement3 == JudgementType.Ignore) break;
 
-                                                ProcessNote(judgement3);
-                                                noteList.Remove(touchedNoteList2[targetIndex2]);
-                                                touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
-                                                touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                                    ProcessNote(judgement3);
+                                                    noteList.Remove(touchedNoteList2[targetIndex2]);
+                                                    touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
+                                                    touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                             }
                                         }
                                         else
@@ -607,7 +621,13 @@ public class GameFrame : MonoBehaviour
 
     private IEnumerator MoveFrameCoroutine(Vector2 destination, float time, LerpType lerp)
     {
-        yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
+        //yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
+        float tmp = 0;
+        while (tmp < preTime + GamePlayManager.Instance.calibration)
+        {
+            tmp += Time.deltaTime;
+            yield return null;
+        }
 
         moveFrameEnabled = true;
 
@@ -660,7 +680,13 @@ public class GameFrame : MonoBehaviour
 
     private IEnumerator RotateFrameCoroutine(float destination, float time, LerpType lerp)
     {
-        yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
+        //yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
+        float tmp = 0;
+        while (tmp < preTime + GamePlayManager.Instance.calibration)
+        {
+            tmp += Time.deltaTime;
+            yield return null;
+        }
 
         //Debug.Log(destination);
 
@@ -828,7 +854,7 @@ public class GameFrame : MonoBehaviour
                 GamePlayManager.Instance.currentCombo++;
                 if (GamePlayManager.Instance.currentCombo > GamePlayManager.Instance.maxCombo) GamePlayManager.Instance.maxCombo = GamePlayManager.Instance.currentCombo;
                 break;
-            case JudgementType.Normal:
+            case JudgementType.Good:
                 // 판정
                 //GamePlayManager.Instance.score += 522000f / GamePlayManager.Instance.maxNoteCount;
                 GamePlayManager.Instance.normalCount++;
