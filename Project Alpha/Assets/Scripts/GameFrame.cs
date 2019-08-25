@@ -153,7 +153,7 @@ public class GameFrame : MonoBehaviour
                                         {
                                             touchedNoteList1[targetIndex1].isFlicking = true;
                                             touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
-                                            touchedNoteList1[targetIndex1].touchScreenYPos = tempTouch.position.y;
+                                            touchedNoteList1[targetIndex1].touchScreenPos = tempTouch.position;
                                         }
                                         break;
                                     case NoteType.DownFlick:
@@ -162,7 +162,7 @@ public class GameFrame : MonoBehaviour
                                         {
                                             touchedNoteList1[targetIndex1].isFlicking = true;
                                             touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
-                                            touchedNoteList1[targetIndex1].touchScreenYPos = tempTouch.position.y;
+                                            touchedNoteList1[targetIndex1].touchScreenPos = tempTouch.position;
                                         }
                                         break;
                                 }
@@ -173,9 +173,9 @@ public class GameFrame : MonoBehaviour
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
                             List<Note> touchedNoteList2 = new List<Note>();
-                            List<Note> touchedNoteList3 = new List<Note>();
+                            //List<Note> touchedNoteList3 = new List<Note>();
                             int targetIndex2 = 0;
-                            int targetIndex3 = 0;
+                            //int targetIndex3 = 0;
                             // 터치 가능한 노트를 리스트에 담음
                             foreach (Note note in noteList)
                             {
@@ -184,77 +184,79 @@ public class GameFrame : MonoBehaviour
                                 if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, tempTouch.position) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
                                     touchedNoteList2.Add(note);
                                 if (note.noteType == NoteType.UpFlick && IsTouchedNote(NoteType.UpFlick, note, tempTouch.position) && note.Judgement(NoteType.UpFlick) != JudgementType.Ignore)
-                                    touchedNoteList3.Add(note);
+                                    touchedNoteList2.Add(note);
                                 if (note.noteType == NoteType.DownFlick && IsTouchedNote(NoteType.DownFlick, note, tempTouch.position) && note.Judgement(NoteType.DownFlick) != JudgementType.Ignore)
-                                    touchedNoteList3.Add(note);
+                                    touchedNoteList2.Add(note);
                             }
 
                             // 리스트에 담은 노트 중 가장 아래에 있는 노트를 처리
                             for (int j = 1; j < touchedNoteList2.Count; j++)
                                 if (touchedNoteList2[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList2[targetIndex2].yPosition > touchedNoteList2[j].yPosition)
                                     targetIndex2 = j;
+                            /*
                             for (int j = 1; j < touchedNoteList3.Count; j++)
                                 if (touchedNoteList3[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList3[targetIndex3].yPosition > touchedNoteList3[j].yPosition)
                                     targetIndex3 = j;
-
-                            
+                                    */
+                                                                
                             if (touchedNoteList2.Count > 0)
                             {
-                                // 노트 처리
-                                JudgementType judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
-                                if (judgement2 == JudgementType.Ignore) break;
-                                if (!touchedNoteList2[targetIndex2].isProcessed) ProcessNote(judgement2);
-                                // 처리 완료된 노트는 삭제
-                                //Destroy(touchedNoteList[targetIndex].gameObject);
-                                //noteList.Remove(touchedNoteList2[targetIndex2]);
-                                //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
-                                touchedNoteList2[targetIndex2].isProcessed = true;
-                            }
-
-                            if (touchedNoteList3.Count > 0/* && touchedNoteList3[targetIndex3].touchIndex == tempTouch.fingerId*/)
-                            {
-                                switch (touchedNoteList3[targetIndex3].noteType)
+                                switch (touchedNoteList2[targetIndex2].noteType)
                                 {
+                                    case NoteType.Slide:
+                                    case NoteType.Long:
+                                        // 노트 처리
+                                        JudgementType judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
+                                        if (judgement2 == JudgementType.Ignore) break;
+                                        if (!touchedNoteList2[targetIndex2].isProcessed) ProcessNote(judgement2);
+                                        // 처리 완료된 노트는 삭제
+                                        //Destroy(touchedNoteList[targetIndex].gameObject);
+                                        //noteList.Remove(touchedNoteList2[targetIndex2]);
+                                        //touchedNoteList2[targetIndex2].gameObject.SetActive(false);
+                                        touchedNoteList2[targetIndex2].isProcessed = true;
+                                        break;
+
                                     case NoteType.UpFlick:
-                                        if (touchedNoteList3[targetIndex3].isFlicking)
+                                        if (touchedNoteList2[targetIndex2].isFlicking)
                                         {
-                                            if (tempTouch.position.y > touchedNoteList3[targetIndex3].touchScreenYPos + GameFrame.JudgementLineWidth)
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y + GameFrame.JudgementLineWidth)
                                             {
-                                                JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                                JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
                                                 if (judgement3 == JudgementType.Ignore) break;
 
                                                 ProcessNote(judgement3);
-                                                noteList.Remove(touchedNoteList3[targetIndex3]);
-                                                touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
-                                                touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                                noteList.Remove(touchedNoteList2[targetIndex2]);
+                                                touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
+                                                touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                             }
                                         }
                                         else
                                         {
-                                            touchedNoteList3[targetIndex3].isFlicking = true;
-                                            touchedNoteList3[targetIndex3].touchIndex = tempTouch.fingerId;
-                                            touchedNoteList3[targetIndex3].touchScreenYPos = tempTouch.position.y;
+                                            touchedNoteList2[targetIndex2].isFlicking = true;
+                                            touchedNoteList2[targetIndex2].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                         }
                                         break;
+
                                     case NoteType.DownFlick:
-                                        if (touchedNoteList3[targetIndex3].isFlicking)
+                                        if (touchedNoteList2[targetIndex2].isFlicking)
                                         {
-                                            if (tempTouch.position.y < touchedNoteList3[targetIndex3].touchScreenYPos - GameFrame.JudgementLineWidth)
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y - GameFrame.JudgementLineWidth)
                                             {
-                                                JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
+                                                JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
                                                 if (judgement3 == JudgementType.Ignore) break;
 
                                                 ProcessNote(judgement3);
-                                                noteList.Remove(touchedNoteList3[targetIndex3]);
-                                                touchedNoteList3[targetIndex3].DisplayJudgement(judgement3);
-                                                touchedNoteList3[targetIndex3].gameObject.SetActive(false);
+                                                noteList.Remove(touchedNoteList2[targetIndex2]);
+                                                touchedNoteList2[targetIndex2].DisplayJudgement(judgement3);
+                                                touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                             }
                                         }
                                         else
                                         {
-                                            touchedNoteList3[targetIndex3].isFlicking = true;
-                                            touchedNoteList3[targetIndex3].touchIndex = tempTouch.fingerId;
-                                            touchedNoteList3[targetIndex3].touchScreenYPos = tempTouch.position.y;
+                                            touchedNoteList2[targetIndex2].isFlicking = true;
+                                            touchedNoteList2[targetIndex2].touchIndex = tempTouch.fingerId;
+                                            touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                         }
                                         break;
                                 }
@@ -347,7 +349,7 @@ public class GameFrame : MonoBehaviour
                                 {
                                     touchedNoteList1[targetIndex1].isFlicking = true;
                                     touchedNoteList1[targetIndex1].touchIndex = 0;
-                                    touchedNoteList1[targetIndex1].touchScreenYPos = Input.mousePosition.y;
+                                    touchedNoteList1[targetIndex1].touchScreenPos = Input.mousePosition;
                                 }
                                 break;
                             case NoteType.DownFlick:
@@ -356,7 +358,7 @@ public class GameFrame : MonoBehaviour
                                 {
                                     touchedNoteList1[targetIndex1].isFlicking = true;
                                     touchedNoteList1[targetIndex1].touchIndex = 0;
-                                    touchedNoteList1[targetIndex1].touchScreenYPos = Input.mousePosition.y;
+                                    touchedNoteList1[targetIndex1].touchScreenPos = Input.mousePosition;
                                 }
                                 break;
                         }
@@ -410,7 +412,7 @@ public class GameFrame : MonoBehaviour
                             case NoteType.UpFlick:
                                 if (touchedNoteList3[targetIndex3].isFlicking)
                                 {
-                                    if (Input.mousePosition.y > touchedNoteList3[targetIndex3].touchScreenYPos + GameFrame.JudgementLineWidth)
+                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y + GameFrame.JudgementLineWidth)
                                     {
                                         JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
                                         if (judgement3 == JudgementType.Ignore) break;
@@ -425,13 +427,13 @@ public class GameFrame : MonoBehaviour
                                 {
                                     touchedNoteList3[targetIndex3].isFlicking = true;
                                     touchedNoteList3[targetIndex3].touchIndex = 0;
-                                    touchedNoteList3[targetIndex3].touchScreenYPos = Input.mousePosition.y;
+                                    touchedNoteList3[targetIndex3].touchScreenPos = Input.mousePosition;
                                 }
                                 break;
                             case NoteType.DownFlick:
                                 if (touchedNoteList3[targetIndex3].isFlicking)
                                 {
-                                    if (Input.mousePosition.y < touchedNoteList3[targetIndex3].touchScreenYPos - GameFrame.JudgementLineWidth)
+                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y - GameFrame.JudgementLineWidth)
                                     {
                                         JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
                                         if (judgement3 == JudgementType.Ignore) break;
@@ -446,7 +448,7 @@ public class GameFrame : MonoBehaviour
                                 {
                                     touchedNoteList3[targetIndex3].isFlicking = true;
                                     touchedNoteList3[targetIndex3].touchIndex = 0;
-                                    touchedNoteList3[targetIndex3].touchScreenYPos = Input.mousePosition.y;
+                                    touchedNoteList3[targetIndex3].touchScreenPos = Input.mousePosition;
                                 }
                                 break;
                         }

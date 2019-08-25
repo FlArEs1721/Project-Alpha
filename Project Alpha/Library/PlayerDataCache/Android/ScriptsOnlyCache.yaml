@@ -873,7 +873,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 048df54235411def8b30e31c3eb86544
+      Hash: cd5051dadadaa7fdca71e2ca0b847f6a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Note

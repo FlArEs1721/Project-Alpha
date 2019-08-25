@@ -19,7 +19,7 @@ public class SettingManager : MonoBehaviour
         sendInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
         noteSpeedText.text = sendInfo.noteSpeed.ToString();
         calibrationText.text = sendInfo.calibration.ToString();
-        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 1) / 19f;
+        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 2) / 18f;
         calibrationScrollbar.value = sendInfo.calibration * 2;
     }
 
@@ -33,20 +33,20 @@ public class SettingManager : MonoBehaviour
         }
 
         noteSpeedText.text = sendInfo.noteSpeed.ToString();
-        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 1) / 19f;
+        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 2) / 18f;
     }
 
     public void DecreaseNoteSpeed()
     {
         sendInfo.noteSpeed -= 0.5f;
 
-        if (sendInfo.noteSpeed < 0.5f)
+        if (sendInfo.noteSpeed < 1f)
         {
-            sendInfo.noteSpeed = 0.5f;
+            sendInfo.noteSpeed = 1f;
         }
 
         noteSpeedText.text = sendInfo.noteSpeed.ToString();
-        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 1) / 19f;
+        noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 2) / 18f;
     }
 
     public void IncreaseCalibration()

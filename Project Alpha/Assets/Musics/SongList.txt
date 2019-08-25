@@ -1,7 +1,8 @@
 0,0,Alpha Pack,,0
 1,0,0,Myosotis,M2U & NICODE,,1,5,9,M,0,0
 1,0,1,Perfect 10 (Unknown Brain & Rudelies VIP),Unknown Brain,,1,5,9,10,0,0
-1,0,2,Test,Unknown Artist,,1,1,1,.,0,0
-1,0,3,Test2,Unknown Artist,,1,2,3,4,0,0
+1,0,2,Light It Up (feat. Jex),Robin Hustin x TobiMorrow,,1,5,9,L,0,0
+1,0,3,Test,Unknown Artist,,1,1,1,.,0,0
+1,0,4,Test2,Unknown Artist,,1,2,3,4,0,0
 0,1,Beta Pack,,1
 0,2,Gamma Pack,,2

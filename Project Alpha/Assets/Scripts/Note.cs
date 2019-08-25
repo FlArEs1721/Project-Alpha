@@ -53,7 +53,7 @@ public class Note : MonoBehaviour
     public int touchIndex = -1;
 
     [HideInInspector]
-    public float touchScreenYPos = 0;
+    public Vector3 touchScreenPos = Vector3.zero;
 
     /// <summary>
     /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
@@ -245,24 +245,22 @@ public class Note : MonoBehaviour
                 if (mistakeTime > x) return JudgementType.Ignore;
                 else return JudgementType.Perfect;
             case NoteType.UpFlick:
-                // 오차 시간이 x 이하인 경우 Perfect
-                // 오차 시간이 (2.5)x 이하인 경우 Normal
-                // 오차 시간이 그 초과인 경우 Miss
-                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
+                // 오차 시간이 (0.8)x 이하인 경우 Perfect
+                // 오차 시간이 (1.5)x 이하인 경우 Normal
+                // 오차 시간이 (2)x인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
-                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > x) return JudgementType.Normal;
+                if (mistakeTime > 2f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 1.5f * x) return JudgementType.Miss;
+                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
             case NoteType.DownFlick:
-                // 오차 시간이 x 이하인 경우 Perfect
-                // 오차 시간이 (2.5)x 이하인 경우 Normal
-                // 오차 시간이 그 초과인 경우 Miss
-                // 오차 시간이 (3.5)x 이상인 경우 해당 입력은 무시
+                // 오차 시간이 (0.8)x 이하인 경우 Perfect
+                // 오차 시간이 (1.5)x 이하인 경우 Normal
+                // 오차 시간이 (2)x인 경우 해당 입력은 무시
                 //float absYPosition = Mathf.Abs(yPosition);
-                if (mistakeTime > 3.5f * x) return JudgementType.Ignore;
-                else if (mistakeTime > 2.5f * x) return JudgementType.Miss;
-                else if (mistakeTime > x) return JudgementType.Normal;
+                if (mistakeTime > 2f * x) return JudgementType.Ignore;
+                else if (mistakeTime > 1.5f * x) return JudgementType.Miss;
+                else if (mistakeTime > 0.8f * x) return JudgementType.Normal;
                 else return JudgementType.Perfect;
         }
 

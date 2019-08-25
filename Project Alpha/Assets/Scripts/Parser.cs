@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -214,9 +215,9 @@ public class Parser : MonoBehaviour
                             break;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.LogError(i);
+                    Debug.LogError((i + 2).ToString() + "\n" + ex);
                 }
             }
 

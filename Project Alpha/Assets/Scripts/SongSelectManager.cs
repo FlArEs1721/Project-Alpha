@@ -22,7 +22,7 @@ public class SongSelectManager : MonoBehaviour
 
     private int currentPackIndex = 0;
     private int currentSongIndex = 0;
-    private SongDifficulty currentDifficulty = SongDifficulty.Hard;
+    private SongDifficulty currentDifficulty = SongDifficulty.Special;
 
     private readonly Color[] DifficultyNormalColor = new Color[4] { new Color(102f / 255f, 1, 102f / 255f), new Color(0, 153f / 255f, 1), new Color(1, 51f / 255f, 0), new Color(1, 1, 1) };
     private readonly Color[] DifficultyPressedColor = new Color[4] { new Color(0, 204f / 255f, 0), new Color(0, 107f / 255f, 179f / 255f), new Color(179f / 255f, 36f / 255f, 0), new Color(0.8f, 0.8f, 0.8f) };
