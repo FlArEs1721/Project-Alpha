@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class Utility
-{
-    public static float GetLerp(LerpType lerp, float currentTime, float time)
-    {
+public static class Utility {
+    public static float GetLerp(LerpType lerp, float currentTime, float time) {
         float t = currentTime / time;
-        switch (lerp)
-        {
+        switch (lerp) {
             case LerpType.None:
                 return t;
             case LerpType.SmoothIn:
@@ -22,8 +19,7 @@ public static class Utility
         }
     }
 
-    public static float GetMistakeTime(float noteSpeed, float yPosition)
-    {
+    public static float GetMistakeTime(float noteSpeed, float yPosition) {
         // 노트의 실제 속도 계산 (pixel/ms)
         float realSpeed = (noteSpeed * GamePlayManager.NoteSpeedConstant) / 1000f;
 

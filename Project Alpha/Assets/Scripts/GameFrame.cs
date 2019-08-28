@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameFrame : MonoBehaviour
-{
+public class GameFrame : MonoBehaviour {
     public GameObject bgSprite;
     public GameObject noteLayer;
+    public GameObject noteMask;
     public GameObject judgementLayer;
     public GameObject judgementLine;
+
+    [HideInInspector]
+    public int frameNumber;
 
     /// <summary>
     /// 게임프레임의 위치
@@ -57,11 +60,15 @@ public class GameFrame : MonoBehaviour
 
     private float preTime = 5;
 
+    private void Start() {
+        noteMask.GetComponent<SpriteMask>().frontSortingOrder = frameNumber + 1;
+        noteMask.GetComponent<SpriteMask>().backSortingOrder = frameNumber;
+    }
+
     /// <summary>
     /// 매 프레임마다 실행
     /// </summary>
-    private void Update()
-    {
+    private void Update() {
         // 게임프레임 위치 동기화
         this.transform.localPosition = position;
 
@@ -70,30 +77,26 @@ public class GameFrame : MonoBehaviour
 
         // 게임프레임 크기 동기화
         bgSprite.transform.localScale = new Vector3(frameSize.x, frameSize.y, 1);
+        noteMask.transform.localScale = new Vector3(frameSize.x, frameSize.y, 1);
         judgementLine.transform.localPosition = new Vector3(0, -(frameSize.y / 2f) + (JudgementLineWidth / 2), -1);
         judgementLine.transform.localScale = new Vector3(frameSize.x, JudgementLineWidth, 1);
-        noteLayer.transform.localPosition = new Vector3(0, -(frameSize.y / 2f) + (JudgementLineWidth / 2), -0.5f);
+        noteLayer.transform.localPosition = new Vector3(0, -(frameSize.y / 2f), -0.5f);
 
 #if UNITY_ANDROID
         // 터치를 받아와 noteList에 있는 노트들 처리
         int touchCount = Input.touchCount;
-        if (touchCount > 0 && Time.timeScale != 0)
-        {
-            for (int i = 0; i < touchCount; i++)
-            {
+        if (touchCount > 0 && Time.timeScale != 0) {
+            for (int i = 0; i < touchCount; i++) {
                 Touch tempTouch = Input.GetTouch(i);
 
-                try
-                {
-                    switch (tempTouch.phase)
-                    {
+                try {
+                    switch (tempTouch.phase) {
                         // 터치 노트 처리
                         case TouchPhase.Began:
                             List<Note> touchedNoteList1 = new List<Note>();
                             int targetIndex1 = 0;
                             // 터치 가능한 노트를 리스트에 담음
-                            foreach (Note note in noteList)
-                            {
+                            foreach (Note note in noteList) {
                                 // 터치 노트
                                 if (note.noteType == NoteType.Touch && IsTouchedNote(NoteType.Touch, note, tempTouch.position) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
                                     touchedNoteList1.Add(note);
@@ -119,12 +122,10 @@ public class GameFrame : MonoBehaviour
                             // 노트 처리
                             JudgementType judgement1 = touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType);
                             if (judgement1 == JudgementType.Ignore) break;
-                            if (touchedNoteList1.Count > 0)
-                            {
+                            if (touchedNoteList1.Count > 0) {
                                 // 처리 완료된 노트는 삭제
                                 //Destroy(touchedNoteList[targetIndex].gameObject);
-                                switch (touchedNoteList1[targetIndex1].noteType)
-                                {
+                                switch (touchedNoteList1[targetIndex1].noteType) {
                                     case NoteType.Touch:
                                         // 노트 처리
                                         ProcessNote(judgement1);
@@ -149,8 +150,7 @@ public class GameFrame : MonoBehaviour
                                         break;
                                     case NoteType.UpFlick:
                                         // 노트 처리
-                                        if (!touchedNoteList1[targetIndex1].isFlicking)
-                                        {
+                                        if (!touchedNoteList1[targetIndex1].isFlicking) {
                                             touchedNoteList1[targetIndex1].isFlicking = true;
                                             touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
                                             touchedNoteList1[targetIndex1].touchScreenPos = tempTouch.position;
@@ -158,8 +158,7 @@ public class GameFrame : MonoBehaviour
                                         break;
                                     case NoteType.DownFlick:
                                         // 노트 처리
-                                        if (!touchedNoteList1[targetIndex1].isFlicking)
-                                        {
+                                        if (!touchedNoteList1[targetIndex1].isFlicking) {
                                             touchedNoteList1[targetIndex1].isFlicking = true;
                                             touchedNoteList1[targetIndex1].touchIndex = tempTouch.fingerId;
                                             touchedNoteList1[targetIndex1].touchScreenPos = tempTouch.position;
@@ -177,8 +176,7 @@ public class GameFrame : MonoBehaviour
                             int targetIndex2 = 0;
                             //int targetIndex3 = 0;
                             // 터치 가능한 노트를 리스트에 담음
-                            foreach (Note note in noteList)
-                            {
+                            foreach (Note note in noteList) {
                                 if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, tempTouch.position) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
                                     touchedNoteList2.Add(note);
                                 if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, tempTouch.position) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
@@ -198,11 +196,9 @@ public class GameFrame : MonoBehaviour
                                 if (touchedNoteList3[j].yPosition >= -(JudgementLineWidth / 2) && touchedNoteList3[targetIndex3].yPosition > touchedNoteList3[j].yPosition)
                                     targetIndex3 = j;
                                     */
-                                                                
-                            if (touchedNoteList2.Count > 0)
-                            {
-                                switch (touchedNoteList2[targetIndex2].noteType)
-                                {
+
+                            if (touchedNoteList2.Count > 0) {
+                                switch (touchedNoteList2[targetIndex2].noteType) {
                                     case NoteType.Slide:
                                     case NoteType.Long:
                                         // 노트 처리
@@ -217,12 +213,9 @@ public class GameFrame : MonoBehaviour
                                         break;
 
                                     case NoteType.UpFlick:
-                                        if (touchedNoteList2[targetIndex2].isFlicking)
-                                        {
-                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y)
-                                            {
-                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y + GameFrame.JudgementLineWidth)
-                                                {
+                                        if (touchedNoteList2[targetIndex2].isFlicking) {
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y) {
+                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y + GameFrame.JudgementLineWidth) {
                                                     JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
                                                     if (judgement3 == JudgementType.Ignore) break;
 
@@ -232,13 +225,11 @@ public class GameFrame : MonoBehaviour
                                                     touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                                 }
                                             }
-                                            else
-                                            {
+                                            else {
                                                 touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                             }
                                         }
-                                        else
-                                        {
+                                        else {
                                             touchedNoteList2[targetIndex2].isFlicking = true;
                                             touchedNoteList2[targetIndex2].touchIndex = tempTouch.fingerId;
                                             touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
@@ -246,12 +237,9 @@ public class GameFrame : MonoBehaviour
                                         break;
 
                                     case NoteType.DownFlick:
-                                        if (touchedNoteList2[targetIndex2].isFlicking)
-                                        {
-                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y)
-                                            {
-                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y - GameFrame.JudgementLineWidth)
-                                                {
+                                        if (touchedNoteList2[targetIndex2].isFlicking) {
+                                            if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y) {
+                                                if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(tempTouch.position)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList2[targetIndex2].touchScreenPos)).y - GameFrame.JudgementLineWidth) {
                                                     JudgementType judgement3 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
                                                     if (judgement3 == JudgementType.Ignore) break;
 
@@ -261,13 +249,11 @@ public class GameFrame : MonoBehaviour
                                                     touchedNoteList2[targetIndex2].gameObject.SetActive(false);
                                                 }
                                             }
-                                            else
-                                            {
+                                            else {
                                                 touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
                                             }
                                         }
-                                        else
-                                        {
+                                        else {
                                             touchedNoteList2[targetIndex2].isFlicking = true;
                                             touchedNoteList2[targetIndex2].touchIndex = tempTouch.fingerId;
                                             touchedNoteList2[targetIndex2].touchScreenPos = tempTouch.position;
@@ -283,25 +269,20 @@ public class GameFrame : MonoBehaviour
                             break;
                     }
                 }
-                catch
-                {
+                catch {
                     continue;
                 }
             }
         }
 #endif
 #if UNITY_EDITOR
-        try
-        {
-            if (Time.timeScale != 0)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
+        try {
+            if (Time.timeScale != 0) {
+                if (Input.GetMouseButtonDown(0)) {
                     List<Note> touchedNoteList1 = new List<Note>();
                     int targetIndex1 = 0;
                     // 터치 가능한 노트를 리스트에 담음
-                    foreach (Note note in noteList)
-                    {
+                    foreach (Note note in noteList) {
                         // 터치 노트
                         if (note.noteType == NoteType.Touch && IsTouchedNote(NoteType.Touch, note, Input.mousePosition) && note.Judgement(NoteType.Touch) != JudgementType.Ignore)
                             touchedNoteList1.Add(note);
@@ -324,14 +305,12 @@ public class GameFrame : MonoBehaviour
                             targetIndex1 = j;
                     // 노트 처리
                     JudgementType judgement1 = JudgementType.Ignore;
-                    if (touchedNoteList1.Count > 0)
-                    {
+                    if (touchedNoteList1.Count > 0) {
                         judgement1 = touchedNoteList1[targetIndex1].Judgement(touchedNoteList1[targetIndex1].noteType);
                         //if (judgement1 == JudgementType.Ignore) break;
                         // 처리 완료된 노트는 삭제
                         //Destroy(touchedNoteList[targetIndex].gameObject);
-                        switch (touchedNoteList1[targetIndex1].noteType)
-                        {
+                        switch (touchedNoteList1[targetIndex1].noteType) {
                             case NoteType.Touch:
                                 // 노트 처리
                                 ProcessNote(judgement1);
@@ -359,8 +338,7 @@ public class GameFrame : MonoBehaviour
                                 break;
                             case NoteType.UpFlick:
                                 // 노트 처리
-                                if (!touchedNoteList1[targetIndex1].isFlicking)
-                                {
+                                if (!touchedNoteList1[targetIndex1].isFlicking) {
                                     touchedNoteList1[targetIndex1].isFlicking = true;
                                     touchedNoteList1[targetIndex1].touchIndex = 0;
                                     touchedNoteList1[targetIndex1].touchScreenPos = Input.mousePosition;
@@ -368,8 +346,7 @@ public class GameFrame : MonoBehaviour
                                 break;
                             case NoteType.DownFlick:
                                 // 노트 처리
-                                if (!touchedNoteList1[targetIndex1].isFlicking)
-                                {
+                                if (!touchedNoteList1[targetIndex1].isFlicking) {
                                     touchedNoteList1[targetIndex1].isFlicking = true;
                                     touchedNoteList1[targetIndex1].touchIndex = 0;
                                     touchedNoteList1[targetIndex1].touchScreenPos = Input.mousePosition;
@@ -378,15 +355,13 @@ public class GameFrame : MonoBehaviour
                         }
                     }
                 }
-                else if (Input.GetMouseButton(0))
-                {
+                else if (Input.GetMouseButton(0)) {
                     List<Note> touchedNoteList2 = new List<Note>();
                     List<Note> touchedNoteList3 = new List<Note>();
                     int targetIndex2 = 0;
                     int targetIndex3 = 0;
                     // 터치 가능한 노트를 리스트에 담음
-                    foreach (Note note in noteList)
-                    {
+                    foreach (Note note in noteList) {
                         if (note.noteType == NoteType.Slide && IsTouchedNote(NoteType.Slide, note, Input.mousePosition) && note.Judgement(NoteType.Slide) != JudgementType.Ignore)
                             touchedNoteList2.Add(note);
                         if (note.noteType == NoteType.Long && IsTouchedNote(NoteType.Long, note, Input.mousePosition) && note.Judgement(NoteType.Long) != JudgementType.Ignore)
@@ -407,8 +382,7 @@ public class GameFrame : MonoBehaviour
 
                     // 노트 처리
                     JudgementType judgement2 = JudgementType.Ignore;
-                    if (touchedNoteList2.Count > 0)
-                    {
+                    if (touchedNoteList2.Count > 0) {
                         judgement2 = touchedNoteList2[targetIndex2].Judgement(touchedNoteList2[targetIndex2].noteType);
                         //if (judgement2 == JudgementType.Ignore) break;
                         if (!touchedNoteList2[targetIndex2].isProcessed) ProcessNote(judgement2);
@@ -419,15 +393,11 @@ public class GameFrame : MonoBehaviour
                         touchedNoteList2[targetIndex2].isProcessed = true;
                     }
 
-                    if (touchedNoteList3.Count > 0 && touchedNoteList3[targetIndex3].touchIndex == 0)
-                    {
-                        switch (touchedNoteList3[targetIndex3].noteType)
-                        {
+                    if (touchedNoteList3.Count > 0 && touchedNoteList3[targetIndex3].touchIndex == 0) {
+                        switch (touchedNoteList3[targetIndex3].noteType) {
                             case NoteType.UpFlick:
-                                if (touchedNoteList3[targetIndex3].isFlicking)
-                                {
-                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y + GameFrame.JudgementLineWidth)
-                                    {
+                                if (touchedNoteList3[targetIndex3].isFlicking) {
+                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y > transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y + GameFrame.JudgementLineWidth) {
                                         JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
                                         if (judgement3 == JudgementType.Ignore) break;
 
@@ -437,18 +407,15 @@ public class GameFrame : MonoBehaviour
                                         touchedNoteList3[targetIndex3].gameObject.SetActive(false);
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     touchedNoteList3[targetIndex3].isFlicking = true;
                                     touchedNoteList3[targetIndex3].touchIndex = 0;
                                     touchedNoteList3[targetIndex3].touchScreenPos = Input.mousePosition;
                                 }
                                 break;
                             case NoteType.DownFlick:
-                                if (touchedNoteList3[targetIndex3].isFlicking)
-                                {
-                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y - GameFrame.JudgementLineWidth)
-                                    {
+                                if (touchedNoteList3[targetIndex3].isFlicking) {
+                                    if (transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition)).y < transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(touchedNoteList3[targetIndex3].touchScreenPos)).y - GameFrame.JudgementLineWidth) {
                                         JudgementType judgement3 = touchedNoteList3[targetIndex3].Judgement(touchedNoteList3[targetIndex3].noteType);
                                         if (judgement3 == JudgementType.Ignore) break;
 
@@ -458,8 +425,7 @@ public class GameFrame : MonoBehaviour
                                         touchedNoteList3[targetIndex3].gameObject.SetActive(false);
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     touchedNoteList3[targetIndex3].isFlicking = true;
                                     touchedNoteList3[targetIndex3].touchIndex = 0;
                                     touchedNoteList3[targetIndex3].touchScreenPos = Input.mousePosition;
@@ -468,31 +434,27 @@ public class GameFrame : MonoBehaviour
                         }
                     }
                 }
-                else if (Input.GetMouseButtonUp(0))
-                {
+                else if (Input.GetMouseButtonUp(0)) {
 
                 }
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Debug.LogError(ex);
         }
 #endif
         //Debug.Log(Input.mousePosition + ", " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
     }
 
-    public bool IsTouchedNote(NoteType noteType, Note note, Vector2 touch)
-    {
+    public bool IsTouchedNote(NoteType noteType, Note note, Vector2 touch) {
         Vector2 touchPos = Camera.main.ScreenToWorldPoint(touch);
-        switch (noteType)
-        {
+        switch (noteType) {
             case NoteType.Touch:
                 if (note.gameFrame.transform.InverseTransformPoint(touchPos).x < frameSize.x / 2 + GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x > -frameSize.x / 2 - GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x < note.xPosition + noteXSize / 2 + GamePlayManager.NoteTouchExtraSizeX
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).x > note.xPosition - noteXSize / 2 - GamePlayManager.NoteTouchExtraSizeX
-                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y < judgementLine.transform.localPosition.y + (JudgementLineWidth / 2) + GamePlayManager.NoteTouchExtraSizeY 
+                    && note.gameFrame.transform.InverseTransformPoint(touchPos).y < judgementLine.transform.localPosition.y + (JudgementLineWidth / 2) + GamePlayManager.NoteTouchExtraSizeY
                     && note.gameFrame.transform.InverseTransformPoint(touchPos).y > judgementLine.transform.localPosition.y - (JudgementLineWidth / 2) - GamePlayManager.NoteTouchExtraSizeY)
                     return true;
                 else return false;
@@ -545,8 +507,7 @@ public class GameFrame : MonoBehaviour
     /// <param name="noteSize">노트의 크기</param>
     /// <param name="createTime">생성 시간</param>
     /// <param name="lerp">선형 보간 종류</param>
-    public void CreateFrame(Vector2 position, float rotation, Vector2 frameSize, float noteXSize, float createTime, LerpType lerp)
-    {
+    public void CreateFrame(Vector2 position, float rotation, Vector2 frameSize, float noteXSize, float createTime, LerpType lerp) {
         // 이미 생성되었다면 실행되지 않음
         if (!isCreating) return;
 
@@ -561,8 +522,7 @@ public class GameFrame : MonoBehaviour
         StartCoroutine(createFrameCoroutine);
     }
 
-    private IEnumerator CreateFrameCoroutine(Vector2 destination, float time, LerpType lerp)
-    {
+    private IEnumerator CreateFrameCoroutine(Vector2 destination, float time, LerpType lerp) {
         //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " Start Create");
         yield return new WaitForSeconds(preTime - time + GamePlayManager.Instance.calibration);
         //Debug.Log(preTime.ToString() + ", " + time.ToString() + ", " + (2 * preTime - time).ToString() + " End Create");
@@ -570,19 +530,15 @@ public class GameFrame : MonoBehaviour
         Vector2 originalFrameSize = Vector2.zero;
         float tempTime = 0;
 
-        while (true)
-        {
-            if (!GamePlayManager.Instance.isPaused)
-            {
-                if (tempTime <= time)
-                {
+        while (true) {
+            if (!GamePlayManager.Instance.isPaused) {
+                if (tempTime <= time) {
                     Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
                     this.frameSize = temp;
 
                     tempTime += Time.deltaTime;
                 }
-                else
-                {
+                else {
                     this.frameSize = destination;
                     isCreating = false;
 
@@ -594,8 +550,7 @@ public class GameFrame : MonoBehaviour
         }
     }
 
-    public void DestroyFrame()
-    {
+    public void DestroyFrame() {
         gameObject.SetActive(false);
     }
 
@@ -605,10 +560,8 @@ public class GameFrame : MonoBehaviour
     /// <param name="destination">최종 위치</param>
     /// <param name="moveTime">이동 시간</param>
     /// <param name="lerp">선형 보간 종류</param>
-    public void MoveFrame(Vector2 destination, float moveTime, LerpType lerp)
-    {
-        if (moveFrameEnabled)
-        {
+    public void MoveFrame(Vector2 destination, float moveTime, LerpType lerp) {
+        if (moveFrameEnabled) {
             // 이미 이동 중이라면 이동 중지
             moveFrameEnabled = false;
             StopCoroutine(moveFrameCoroutine);
@@ -619,12 +572,10 @@ public class GameFrame : MonoBehaviour
         StartCoroutine(moveFrameCoroutine);
     }
 
-    private IEnumerator MoveFrameCoroutine(Vector2 destination, float time, LerpType lerp)
-    {
+    private IEnumerator MoveFrameCoroutine(Vector2 destination, float time, LerpType lerp) {
         //yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
         float tmp = 0;
-        while (tmp < preTime + GamePlayManager.Instance.calibration)
-        {
+        while (tmp < preTime + GamePlayManager.Instance.calibration) {
             tmp += Time.deltaTime;
             yield return null;
         }
@@ -634,19 +585,15 @@ public class GameFrame : MonoBehaviour
         Vector2 originalPosition = this.position;
         float tempTime = 0;
 
-        while (true)
-        {
-            if (!GamePlayManager.Instance.isPaused)
-            {
-                if (tempTime <= time)
-                {
+        while (true) {
+            if (!GamePlayManager.Instance.isPaused) {
+                if (tempTime <= time) {
                     Vector2 temp = Vector2.Lerp(originalPosition, destination, Utility.GetLerp(lerp, tempTime, time));
                     this.position = temp;
 
                     tempTime += Time.deltaTime;
                 }
-                else
-                {
+                else {
                     this.position = destination;
                     moveFrameEnabled = false;
 
@@ -664,10 +611,8 @@ public class GameFrame : MonoBehaviour
     /// <param name="destination">최종 각도</param>
     /// <param name="rotateTime">회전 시간</param>
     /// <param name="lerp">선형 보간 종류</param>
-    public void RotateFrame(float destination, float rotateTime, LerpType lerp)
-    {
-        if (rotateFrameEnabled)
-        {
+    public void RotateFrame(float destination, float rotateTime, LerpType lerp) {
+        if (rotateFrameEnabled) {
             // 이미 회전 중이라면 회전 중지
             rotateFrameEnabled = false;
             StopCoroutine(rotateFrameCoroutine);
@@ -678,12 +623,10 @@ public class GameFrame : MonoBehaviour
         StartCoroutine(rotateFrameCoroutine);
     }
 
-    private IEnumerator RotateFrameCoroutine(float destination, float time, LerpType lerp)
-    {
+    private IEnumerator RotateFrameCoroutine(float destination, float time, LerpType lerp) {
         //yield return new WaitForSeconds(preTime + GamePlayManager.Instance.calibration);
         float tmp = 0;
-        while (tmp < preTime + GamePlayManager.Instance.calibration)
-        {
+        while (tmp < preTime + GamePlayManager.Instance.calibration) {
             tmp += Time.deltaTime;
             yield return null;
         }
@@ -695,12 +638,9 @@ public class GameFrame : MonoBehaviour
         float originalRotation = this.rotation;
         float tempTime = 0;
 
-        while (true)
-        {
-            if (!GamePlayManager.Instance.isPaused)
-            {
-                if (tempTime <= time)
-                {
+        while (true) {
+            if (!GamePlayManager.Instance.isPaused) {
+                if (tempTime <= time) {
                     float temp = Mathf.Lerp(originalRotation, destination, Utility.GetLerp(lerp, tempTime, time));
                     this.rotation = temp;
 
@@ -708,8 +648,7 @@ public class GameFrame : MonoBehaviour
 
                     tempTime += Time.deltaTime;
                 }
-                else
-                {
+                else {
                     this.rotation = destination;
                     rotateFrameEnabled = false;
 
@@ -727,10 +666,8 @@ public class GameFrame : MonoBehaviour
     /// <param name="destination">최종 크기</param>
     /// <param name="resizeTime">크기 변경 시간</param>
     /// <param name="lerp">선형 보간 종류</param>
-    public void ResizeFrame(Vector2 destination, float resizeTime, LerpType lerp)
-    {
-        if (resizeFrameEnabled)
-        {
+    public void ResizeFrame(Vector2 destination, float resizeTime, LerpType lerp) {
+        if (resizeFrameEnabled) {
             // 이미 크기 변경 중이라면 변경 중지
             resizeFrameEnabled = false;
             preFrameSize = this.frameSize;
@@ -744,12 +681,10 @@ public class GameFrame : MonoBehaviour
         StartCoroutine(resizeFrameCoroutine);
     }
 
-    private IEnumerator ResizeFrameCoroutine(Vector2 destination, float time, LerpType lerp)
-    {
+    private IEnumerator ResizeFrameCoroutine(Vector2 destination, float time, LerpType lerp) {
         //yield return new WaitForSeconds(preTime);
         float tmp = 0;
-        while (tmp < preTime + GamePlayManager.Instance.calibration)
-        {
+        while (tmp < preTime + GamePlayManager.Instance.calibration) {
             tmp += Time.deltaTime;
             yield return null;
         }
@@ -768,20 +703,16 @@ public class GameFrame : MonoBehaviour
         Vector2 originalFrameSize = this.frameSize;
         float tempTime = 0;
 
-        while (true)
-        {
-            if (!GamePlayManager.Instance.isPaused)
-            {
+        while (true) {
+            if (!GamePlayManager.Instance.isPaused) {
                 preFrameSize = this.frameSize;
-                if (tempTime <= time)
-                {
+                if (tempTime <= time) {
                     Vector2 temp = Vector2.Lerp(originalFrameSize, destination, Utility.GetLerp(lerp, tempTime, time));
                     this.frameSize = temp;
 
                     tempTime += Time.deltaTime;
                 }
-                else
-                {
+                else {
                     this.frameSize = destination;
                     resizeFrameEnabled = false;
                     preFrameSize = destination;
@@ -796,18 +727,15 @@ public class GameFrame : MonoBehaviour
     /// <summary>
     /// 화면 위에서 노트를 생성한다.
     /// </summary>
-    public void CreateNote(NoteType noteType, float xPosition, float beatLength = 0)
-    {
-        if (noteType != NoteType.Long)
-        {
+    public void CreateNote(NoteType noteType, float xPosition, float beatLength = 0) {
+        if (noteType != NoteType.Long) {
             Note note = GamePlayManager.Instance.PullNote(noteType, noteLayer).GetComponent<Note>();
             note.gameFrame = this;
             note.noteType = noteType;
             note.xPosition = xPosition;
             note.Initiate();
         }
-        else
-        {
+        else {
             LongNoteDummy longNoteDummy = GamePlayManager.Instance.PullLongNoteDummy(noteLayer).GetComponent<LongNoteDummy>();
             longNoteDummy.gameFrame = this;
             longNoteDummy.xPosition = xPosition;
@@ -818,10 +746,8 @@ public class GameFrame : MonoBehaviour
         }
     }
 
-    private IEnumerator CreateLongNoteCoroutine(LongNoteDummy longNoteDummy, float xPosition, float beatLength)
-    {
-        for (int i = 0; i < Mathf.CeilToInt(beatLength / 4); i++)
-        {
+    private IEnumerator CreateLongNoteCoroutine(LongNoteDummy longNoteDummy, float xPosition, float beatLength) {
+        for (int i = 0; i < Mathf.CeilToInt(beatLength / 4); i++) {
             Note note = GamePlayManager.Instance.PullNote(NoteType.Long, noteLayer).GetComponent<Note>();
             note.gameFrame = this;
             note.noteType = NoteType.Long;
@@ -842,10 +768,8 @@ public class GameFrame : MonoBehaviour
     /// 노트를 판정에 따라 처리한다.
     /// </summary>
     /// <param name="judgementType">판정 결과</param>
-    public void ProcessNote(JudgementType judgementType)
-    {
-        switch (judgementType)
-        {
+    public void ProcessNote(JudgementType judgementType) {
+        switch (judgementType) {
             case JudgementType.Perfect:
                 // 판정
                 //GamePlayManager.Instance.score += 920000f / GamePlayManager.Instance.maxNoteCount;
@@ -874,8 +798,7 @@ public class GameFrame : MonoBehaviour
 /// <summary>
 /// 노트 종류
 /// </summary>
-public enum NoteType
-{
+public enum NoteType {
     /// <summary>
     /// 터치(단타) 노트
     /// </summary>
@@ -901,8 +824,7 @@ public enum NoteType
 /// <summary>
 /// 선형 보간 종류
 /// </summary>
-public enum LerpType
-{
+public enum LerpType {
     None,
     SmoothIn,
     SmoothOut,

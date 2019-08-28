@@ -6,13 +6,11 @@ public class FrameCreateTest : MonoBehaviour
 {
     public GameObject gameFramePrefab;
 
-    private void Start()
-    {
+    private void Start() {
         StartCoroutine(TestCor());
     }
 
-    private IEnumerator TestCor()
-    {
+    private IEnumerator TestCor() {
         yield return new WaitForSeconds(1);
 
         GameFrame testFrame = Instantiate(gameFramePrefab).GetComponent<GameFrame>();

@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreTextControl : MonoBehaviour
-{
+public class ScoreTextControl : MonoBehaviour {
     private Text scoreText;
 
-    private void Awake()
-    {
+    private void Awake() {
         scoreText = gameObject.GetComponent<Text>();
     }
 
-    private void Update()
-    {
+    private void Update() {
         scoreText.text = GetScoreText();
         //Debug.Log(GamePlayManager.Instance.GetScore() + ", " + GamePlayManager.Instance.perfectCount);
     }
 
-    private string GetScoreText()
-    {
+    private string GetScoreText() {
         int score = Mathf.FloorToInt(GamePlayManager.Instance.GetScore());
         //Debug.Log(GamePlayManager.Instance.perfectCount + ", " + GamePlayManager.Instance.maxNoteCount + ", " + (GamePlayManager.Instance.perfectCount / GamePlayManager.Instance.maxNoteCount));
         if (score >= 1000000) return "1000000";

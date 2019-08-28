@@ -139,7 +139,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 494}
   m_MaxSize: {x: 10002, y: 14044}
   vertical: 1
-  controlID: 62
+  controlID: 82
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 222}
   m_MaxSize: {x: 8006, y: 4022}
   vertical: 0
-  controlID: 63
+  controlID: 83
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -329,7 +329,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: ae6dffffdc6dffffba6effffc06effffce6effffd86effffe86effffec6effffbe6fffffec6fffffca70ffffd070ffffde70ffffe870fffff870fffffc70ffff6eb4ffff9cb4ffff7ab5ffff80b5ffff8eb5ffff98b5ffffa8b5ffffacb5ffff3cb7ffff6ab7ffff48b8ffff4eb8ffff5cb8ffff66b8ffff76b8ffff7ab8ffff74fbffff
+      m_ExpandedIDs: 12f2f9ff1ef2f9ffb833faffc033faff2478faff8c7afaff987afaff3abcfaff06c1faffa802fbffbc03fbffc803fbff6a45fbff2cd4fbffce15fcffd29cfcffde9cfcff78defcff80defcffd877fdffde77fdffea77fdff2ac1fdffe0c3fdff200dfefff266feff32b0feffa002ffffac02ffffec4bffffea97fffff697ffff36e1ffff74fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -389,9 +389,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -0.23964342, y: -0.09305259, z: -0.3044307}
+    m_Target: {x: 0, y: 0, z: 0}
     speed: 2
-    m_Value: {x: -0.23964342, y: -0.09305259, z: -0.3044307}
+    m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -424,9 +424,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 1.8923835
+    m_Target: 22
     speed: 2
-    m_Value: 1.8923835
+    m_Value: 2.3566716
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -596,19 +596,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Prefabs
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Prefabs
   m_LastFoldersGridSize: -1
   m_LastProjectPath: D:\UNITY\Project-Alpha\Project Alpha
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: f62a0000
-    m_LastClickedID: 10998
+    m_SelectedIDs: ba290000
+    m_LastClickedID: 10682
     m_ExpandedIDs: 000000002c29000036290000d4290000782a000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0

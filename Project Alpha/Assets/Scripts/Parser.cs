@@ -5,8 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Parser : MonoBehaviour
-{
+public class Parser : MonoBehaviour {
     public AudioSource audioSource;
     public GameObject gameFramePrefab;
     public GameObject touchNotePrefab;
@@ -33,14 +32,12 @@ public class Parser : MonoBehaviour
 
     private int i = 0;
 
-    private void Awake()
-    {
+    private void Awake() {
         //Time.fixedDeltaTime = float.PositiveInfinity;
-        
+
     }
 
-    private void Start()
-    {
+    private void Start() {
         sendInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
         GamePlayManager.Instance.noteSpeed = sendInfo.noteSpeed;
         GamePlayManager.Instance.calibration = sendInfo.calibration;
@@ -49,19 +46,16 @@ public class Parser : MonoBehaviour
         InitiateScore();
     }
 
-    private void Update()
-    {
+    private void Update() {
         audioPlayTime = audioSource.time + tempTime;
 
-        if (!audioSource.isPlaying && isScoreFinished)
-        {
-            sendInfo.results = new float[5] { GamePlayManager.Instance.GetScore(), GamePlayManager.Instance.maxCombo, GamePlayManager.Instance.perfectCount, GamePlayManager.Instance.normalCount, GamePlayManager.Instance.missCount};
+        if (!audioSource.isPlaying && isScoreFinished) {
+            sendInfo.results = new float[5] { GamePlayManager.Instance.GetScore(), GamePlayManager.Instance.maxCombo, GamePlayManager.Instance.perfectCount, GamePlayManager.Instance.normalCount, GamePlayManager.Instance.missCount };
             SceneManager.LoadScene("Result");
         }
     }
 
-    public void InitiateScore()
-    {
+    public void InitiateScore() {
         StringReader sr = new StringReader(scoreData.text);
 
         string source = sr.ReadLine();
@@ -77,11 +71,9 @@ public class Parser : MonoBehaviour
 
         source = sr.ReadLine();
 
-        for (int i = 0; source != null; i++)
-        {
+        for (int i = 0; source != null; i++) {
             // *로 시작하는 줄은 무시 (주석)
-            if (source.Substring(0, 1).Equals("*"))
-            {
+            if (source.Substring(0, 1).Equals("*")) {
                 source = sr.ReadLine();
                 continue;
             }
@@ -89,20 +81,16 @@ public class Parser : MonoBehaviour
             playDataList.Add(new List<PlayData>());
 
             string[] values = source.Split('/');
-            if (values.Length == 0)
-            {
+            if (values.Length == 0) {
                 sr.Close();
                 return;
             }
 
-            for (int j = 0; j < values.Length; j++)
-            {
+            for (int j = 0; j < values.Length; j++) {
                 playDataList[i].Add(new PlayData());
                 string[] tempArray = values[j].Split(',');
-                try
-                {
-                    switch (int.Parse(tempArray[0]))
-                    {
+                try {
+                    switch (int.Parse(tempArray[0])) {
                         case 0:
                             playDataList[i][j].playType = PlayType.None;
                             break;
@@ -177,8 +165,7 @@ public class Parser : MonoBehaviour
                                 if (playDataList[i][j].data[1] == playDataList[i][k].data[1] && playDataList[i][j].data[3] == playDataList[i][k].data[3])
                                     continue;
 
-                            switch (int.Parse(tempArray[2]))
-                            {
+                            switch (int.Parse(tempArray[2])) {
                                 case 0:
                                     GamePlayManager.Instance.CreateNote(NoteType.Touch, touchNotePrefab, judgementObjectPrefab);
                                     GamePlayManager.Instance.maxNoteCount++;
@@ -191,8 +178,7 @@ public class Parser : MonoBehaviour
                                     //GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
                                     // 박자단위 길이
                                     playDataList[i][j].data[3] = float.Parse(tempArray[4]);
-                                    for (int k = 0; k < Mathf.CeilToInt(playDataList[i][j].data[3] / 4); k++)
-                                    {
+                                    for (int k = 0; k < Mathf.CeilToInt(playDataList[i][j].data[3] / 4); k++) {
                                         GamePlayManager.Instance.CreateNote(NoteType.Long, longNotePrefab, judgementObjectPrefab);
                                         GamePlayManager.Instance.maxNoteCount++;
                                     }
@@ -215,8 +201,7 @@ public class Parser : MonoBehaviour
                             break;
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError((i + 2).ToString() + "\n" + ex);
                 }
             }
@@ -232,8 +217,7 @@ public class Parser : MonoBehaviour
         i = 0;
     }
 
-    public IEnumerator PlayAudioCoroutine(float audioPreTime)
-    {
+    public IEnumerator PlayAudioCoroutine(float audioPreTime) {
         audioSource.clip = audioClip;
         audioSource.mute = true;
         audioSource.Play();
@@ -246,26 +230,20 @@ public class Parser : MonoBehaviour
         audioSource.Play();
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         //Debug.Log(i);
-        if (i >= playDataList.Count)
-        {
+        if (i >= playDataList.Count) {
             isScoreFinished = true;
             return;
         }
-        else
-        {
-            for (int j = 0; j < playDataList[i].Count; j++)
-            {
+        else {
+            for (int j = 0; j < playDataList[i].Count; j++) {
                 PlayData temp = playDataList[i][j];
-                switch (temp.playType)
-                {
+                switch (temp.playType) {
                     case PlayType.None:
                         break;
                     case PlayType.CreateNote:
-                        switch (temp.data[1])
-                        {
+                        switch (temp.data[1]) {
                             // 단타노트, 슬라이드 노트
                             case 0:
                             case 1:
@@ -280,9 +258,9 @@ public class Parser : MonoBehaviour
                         }
                         break;
                     case PlayType.CreateFrame:
-                        if (!gameFrameList.ContainsKey((int)temp.data[0]))
-                        {
+                        if (!gameFrameList.ContainsKey((int)temp.data[0])) {
                             gameFrameList.Add((int)temp.data[0], Instantiate(gameFramePrefab).GetComponent<GameFrame>());
+                            gameFrameList[(int)temp.data[0]].frameNumber = (int)temp.data[0];
                             gameFrameList[(int)temp.data[0]].CreateFrame(new Vector2(temp.data[1], temp.data[2]), temp.data[3], new Vector2(temp.data[4], temp.data[5]), temp.data[6], temp.data[7], (LerpType)temp.data[8]);
                         }
                         else Debug.LogWarning("이미 존재하는 게임프레임 번호입니다. 다른 번호를 할당해주세요.");
@@ -307,15 +285,13 @@ public class Parser : MonoBehaviour
     }
 }
 
-public class PlayData
-{
+public class PlayData {
     public PlayType playType;
     public float[] data = new float[9];
     // 0번 데이터는 게임프레임의 번호
 }
 
-public enum PlayType
-{
+public enum PlayType {
     None,
     CreateFrame,
     MoveFrame,

@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SongSelectManager : MonoBehaviour
-{
+public class SongSelectManager : MonoBehaviour {
     public TextAsset songList;
 
     [Space]
@@ -29,20 +28,16 @@ public class SongSelectManager : MonoBehaviour
 
     private bool canEscape = true;
 
-    private void Awake()
-    {
+    private void Awake() {
         difficultyButtonText = difficultyButton.GetComponentInChildren<Text>();
     }
 
-    private void Start()
-    {
+    private void Start() {
         Initiate();
-        if (!sendObj.songPlayed)
-        {
+        if (!sendObj.songPlayed) {
             GoToPackSelect();
         }
-        else
-        {
+        else {
             currentPackIndex = sendObj.currentPackIndex;
             currentSongIndex = sendObj.currentSongIndex;
             currentDifficulty = sendObj.currentDifficulty;
@@ -53,31 +48,24 @@ public class SongSelectManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
+    private void Update() {
 #if UNITY_ANDROID
-        if (Input.GetKeyDown(KeyCode.Escape) && canEscape)
-        {
-            if (songPackSelectPanel.activeSelf)
-            {
+        if (Input.GetKeyDown(KeyCode.Escape) && canEscape) {
+            if (songPackSelectPanel.activeSelf) {
                 SceneManager.LoadScene("Title");
             }
-            else
-            {
+            else {
                 Initiate();
                 GoToPackSelect();
             }
         }
 #endif
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Escape) && canEscape)
-        {
-            if (songPackSelectPanel.activeSelf)
-            {
+        if (Input.GetKeyDown(KeyCode.Escape) && canEscape) {
+            if (songPackSelectPanel.activeSelf) {
                 SceneManager.LoadScene("Title");
             }
-            else
-            {
+            else {
                 Initiate();
                 GoToPackSelect();
             }
@@ -85,22 +73,18 @@ public class SongSelectManager : MonoBehaviour
 #endif
     }
 
-    private void Initiate()
-    {
+    private void Initiate() {
         sendObj = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
 
         // 음악팩과 음악들의 정보를 받아옴
         StringReader sr = new StringReader(songList.text);
         string source = sr.ReadLine();
-        for (int i = 0; source != null; i++)
-        {
+        for (int i = 0; source != null; i++) {
             string[] values = source.Split(',');
-            if (values[0] == "0")
-            {
+            if (values[0] == "0") {
                 SongPack newPack = new SongPack(int.Parse(values[1]), values[2], values[3], (SongState)int.Parse(values[4]));
             }
-            else if (values[0] == "1")
-            {
+            else if (values[0] == "1") {
                 Song newSong = new Song(int.Parse(values[1]), int.Parse(values[2]), values[3], values[4], values[5], new string[4] { values[6], values[7], values[8], values[9] }, (SongState)int.Parse(values[10]), (SongState)int.Parse(values[11]));
             }
 
@@ -108,8 +92,7 @@ public class SongSelectManager : MonoBehaviour
         }
     }
 
-    public void SelectPack(int packIndex, int songIndex = 0)
-    {
+    public void SelectPack(int packIndex, int songIndex = 0) {
         if (SongPack.songPackDictionary[packIndex].songDictionary.Count <= 0) return;
 
         currentSongIndex = songIndex;
@@ -117,8 +100,7 @@ public class SongSelectManager : MonoBehaviour
         RefreshSongInfo(packIndex, songIndex);
     }
 
-    private void RefreshSongInfo(int packIndex, int songIndex)
-    {
+    private void RefreshSongInfo(int packIndex, int songIndex) {
         songTitleText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].songTitle;
         songComposerText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].composer;
         difficultyButtonText.text = SongPack.songPackDictionary[packIndex].songDictionary[songIndex].level[(int)currentDifficulty];
@@ -132,20 +114,17 @@ public class SongSelectManager : MonoBehaviour
         difficultyButton.colors = colorBlock;
     }
 
-    public void GoToPackSelect()
-    {
+    public void GoToPackSelect() {
         songPackSelectPanel.SetActive(true);
 
         Transform[] childTransforms = songPackSelectPanel.GetComponentsInChildren<Transform>();
-        for (int i = childTransforms.Length - 1; i >= 0; i--)
-        {
+        for (int i = childTransforms.Length - 1; i >= 0; i--) {
             if (childTransforms[i].Equals(songPackSelectPanel.transform) || childTransforms[i].tag.Equals("Button")) continue;
 
             Destroy(childTransforms[i].gameObject);
         }
 
-        for (int i = 0; i < SongPack.songPackDictionary.Count; i++)
-        {
+        for (int i = 0; i < SongPack.songPackDictionary.Count; i++) {
             GameObject songPackButton = CreateSongPackButton(i);
             Text packNameText = songPackButton.GetComponentInChildren<Text>();
 
@@ -154,34 +133,30 @@ public class SongSelectManager : MonoBehaviour
         }
     }
 
-    private GameObject CreateSongPackButton(int index)
-    {
+    private GameObject CreateSongPackButton(int index) {
         GameObject songPackButton = Instantiate(songPackPrefab, songPackSelectPanel.transform);
-        songPackButton.GetComponent<Button>().onClick.AddListener(delegate() { this.SelectPack(index); });
+        songPackButton.GetComponent<Button>().onClick.AddListener(delegate () { this.SelectPack(index); });
         if (!SongPack.songPackDictionary[index].illustPath.Equals(""))
             songPackButton.GetComponent<Image>().sprite = Resources.Load(SongPack.songPackDictionary[index].illustPath, typeof(Sprite)) as Sprite;
 
         return songPackButton;
     }
 
-    public void NextSong()
-    {
+    public void NextSong() {
         currentSongIndex++;
         if (currentSongIndex >= SongPack.songPackDictionary[currentPackIndex].songDictionary.Count) currentSongIndex = 0;
 
         RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 
-    public void PreviousSong()
-    {
+    public void PreviousSong() {
         currentSongIndex--;
         if (currentSongIndex < 0) currentSongIndex = SongPack.songPackDictionary[currentPackIndex].songDictionary.Count - 1;
 
         RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 
-    public void SelectSong()
-    {
+    public void SelectSong() {
         sendObj.songTitle = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].songTitle;
         sendObj.songDifficulty = currentDifficulty.ToString();
         sendObj.songDifficultyLevel = SongPack.songPackDictionary[currentPackIndex].songDictionary[currentSongIndex].level[(int)currentDifficulty];
@@ -192,10 +167,8 @@ public class SongSelectManager : MonoBehaviour
         SceneManager.LoadScene("Game");
     }
 
-    public void DifficultyChange()
-    {
-        switch (currentDifficulty)
-        {
+    public void DifficultyChange() {
+        switch (currentDifficulty) {
             case SongDifficulty.Easy:
                 currentDifficulty = SongDifficulty.Normal;
                 break;
@@ -216,19 +189,16 @@ public class SongSelectManager : MonoBehaviour
         RefreshSongInfo(currentPackIndex, currentSongIndex);
     }
 
-    public void GoToSetting()
-    {
+    public void GoToSetting() {
         SceneManager.LoadScene("Setting");
     }
 
-    public void Back()
-    {
+    public void Back() {
         SceneManager.LoadScene("Title");
     }
 }
 
-public class SongPack
-{
+public class SongPack {
     public string packName = "";
     public SongState state = SongState.Playable;
     public string illustPath = "";
@@ -236,8 +206,7 @@ public class SongPack
 
     public static Dictionary<int, SongPack> songPackDictionary = new Dictionary<int, SongPack>();
 
-    public SongPack(int index, string packName, string illustPath, SongState state)
-    {
+    public SongPack(int index, string packName, string illustPath, SongState state) {
         this.packName = packName;
         this.illustPath = illustPath;
         this.state = state;
@@ -249,8 +218,7 @@ public class SongPack
     }
 }
 
-public class Song
-{
+public class Song {
     public string songTitle = "";
     public string composer = "";
     public string illustPath = "";
@@ -258,8 +226,7 @@ public class Song
     public SongState normalLevelState = SongState.Playable;
     public SongState specialLevelState = SongState.Playable;
 
-    public Song(int packIndex, int index, string songTitle, string composer, string illustPath, string[] level, SongState normalLevelState, SongState specialLevelState)
-    {
+    public Song(int packIndex, int index, string songTitle, string composer, string illustPath, string[] level, SongState normalLevelState, SongState specialLevelState) {
         this.songTitle = songTitle;
         this.composer = composer;
         this.illustPath = illustPath;
@@ -275,15 +242,13 @@ public class Song
     }
 }
 
-public enum SongState
-{
+public enum SongState {
     Playable,
     Locked,
     DLC
 }
 
-public enum SongDifficulty
-{
+public enum SongDifficulty {
     Easy,
     Normal,
     Hard,

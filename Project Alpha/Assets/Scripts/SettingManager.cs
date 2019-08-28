@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SettingManager : MonoBehaviour
-{
+public class SettingManager : MonoBehaviour {
     public Scrollbar noteSpeedScrollbar;
     public Scrollbar calibrationScrollbar;
     public Text noteSpeedText;
@@ -14,8 +13,7 @@ public class SettingManager : MonoBehaviour
 
     private SendInfo sendInfo;
 
-    private void Start()
-    {
+    private void Start() {
         sendInfo = GameObject.Find("SendInfoObject").GetComponent<SendInfo>();
         noteSpeedText.text = sendInfo.noteSpeed.ToString();
         calibrationText.text = sendInfo.calibration.ToString();
@@ -23,12 +21,10 @@ public class SettingManager : MonoBehaviour
         calibrationScrollbar.value = sendInfo.calibration * 2;
     }
 
-    public void IncreaseNoteSpeed()
-    {
+    public void IncreaseNoteSpeed() {
         sendInfo.noteSpeed += 0.5f;
 
-        if (sendInfo.noteSpeed > 10)
-        {
+        if (sendInfo.noteSpeed > 10) {
             sendInfo.noteSpeed = 10;
         }
 
@@ -36,12 +32,10 @@ public class SettingManager : MonoBehaviour
         noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 2) / 18f;
     }
 
-    public void DecreaseNoteSpeed()
-    {
+    public void DecreaseNoteSpeed() {
         sendInfo.noteSpeed -= 0.5f;
 
-        if (sendInfo.noteSpeed < 1f)
-        {
+        if (sendInfo.noteSpeed < 1f) {
             sendInfo.noteSpeed = 1f;
         }
 
@@ -49,13 +43,11 @@ public class SettingManager : MonoBehaviour
         noteSpeedScrollbar.value = ((sendInfo.noteSpeed * 2) - 2) / 18f;
     }
 
-    public void IncreaseCalibration()
-    {
+    public void IncreaseCalibration() {
         sendInfo.calibration += 0.01f;
         sendInfo.calibration = (float)Math.Round((double)sendInfo.calibration, 2);
 
-        if (sendInfo.calibration > 0.5f)
-        {
+        if (sendInfo.calibration > 0.5f) {
             sendInfo.calibration = 0.5f;
         }
 
@@ -63,13 +55,11 @@ public class SettingManager : MonoBehaviour
         calibrationScrollbar.value = sendInfo.calibration * 2;
     }
 
-    public void DecreaseCalibration()
-    {
+    public void DecreaseCalibration() {
         sendInfo.calibration -= 0.01f;
         sendInfo.calibration = (float)Math.Round((double)sendInfo.calibration, 2);
 
-        if (sendInfo.calibration < 0f)
-        {
+        if (sendInfo.calibration < 0f) {
             sendInfo.calibration = 0f;
         }
 
@@ -77,8 +67,7 @@ public class SettingManager : MonoBehaviour
         calibrationScrollbar.value = sendInfo.calibration * 2;
     }
 
-    public void Back()
-    {
+    public void Back() {
         SceneManager.LoadScene("SongSelect");
     }
 }

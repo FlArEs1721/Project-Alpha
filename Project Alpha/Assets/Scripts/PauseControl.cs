@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseControl : MonoBehaviour
-{
+public class PauseControl : MonoBehaviour {
     public Parser parser;
     public GameObject pausePanel;
     public AudioSource audioSource;
 
     private float fixedDeltaTime = 0;
 
-    public void Pause()
-    {
+    public void Pause() {
         Time.timeScale = 0;
         //fixedDeltaTime = Time.fixedDeltaTime;
         //Time.fixedDeltaTime = float.PositiveInfinity;
@@ -21,8 +19,7 @@ public class PauseControl : MonoBehaviour
         pausePanel.SetActive(true);
     }
 
-    public void Resume()
-    {
+    public void Resume() {
         pausePanel.SetActive(false);
         audioSource.Play();
         Time.timeScale = 1;
@@ -30,16 +27,14 @@ public class PauseControl : MonoBehaviour
         parser.enabled = true;
     }
 
-    public void Retry()
-    {
+    public void Retry() {
         StopAllCoroutines();
         Time.timeScale = 1;
         //Time.fixedDeltaTime = fixedDeltaTime;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void MainMenu()
-    {
+    public void MainMenu() {
         StopAllCoroutines();
         Time.timeScale = 1;
         //Time.fixedDeltaTime = fixedDeltaTime;

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SendInfo : MonoBehaviour
-{
+public class SendInfo : MonoBehaviour {
     public float noteSpeed = 5;
     public float calibration = 0f;
 
@@ -29,8 +28,7 @@ public class SendInfo : MonoBehaviour
     [HideInInspector]
     public float[] results = new float[5];
 
-    private void Start()
-    {
+    private void Start() {
         /*
         if (GameObject.FindGameObjectsWithTag("GameController").Length > 1)
         {

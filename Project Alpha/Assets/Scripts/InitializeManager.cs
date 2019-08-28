@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InitializeManager : MonoBehaviour
-{
+public class InitializeManager : MonoBehaviour {
 
-    private void Start()
-    {
+    private void Start() {
         SceneManager.LoadScene("Title");
     }
 }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GamePlayManager : Singleton<GamePlayManager>
-{
+public class GamePlayManager : Singleton<GamePlayManager> {
     [HideInInspector]
     public float noteSpeed = 5f;
 
@@ -61,19 +60,17 @@ public class GamePlayManager : Singleton<GamePlayManager>
     [HideInInspector]
     public List<GameObject> longNoteDummyPool = new List<GameObject>();
     [HideInInspector]
-    public List<GameObject>upFlickNotePool = new List<GameObject>();
+    public List<GameObject> upFlickNotePool = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> downFlickNotePool = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> judgementObjectPool = new List<GameObject>();
 
-    public void CreateNote(NoteType noteType, GameObject notePrefab, GameObject judgementPrefab)
-    {
+    public void CreateNote(NoteType noteType, GameObject notePrefab, GameObject judgementPrefab) {
         GameObject note = null;
         GameObject judgementObj = null;
 
-        switch (noteType)
-        {
+        switch (noteType) {
             case NoteType.Touch:
                 note = Instantiate(notePrefab, this.transform);
                 note.SetActive(false);
@@ -106,19 +103,16 @@ public class GamePlayManager : Singleton<GamePlayManager>
         judgementObjectPool.Add(judgementObj);
     }
 
-    public void CreateLongDummyNote(GameObject prefab)
-    {
+    public void CreateLongDummyNote(GameObject prefab) {
         GameObject note = null;
         note = Instantiate(prefab, this.transform);
         note.SetActive(false);
         longNoteDummyPool.Add(note);
     }
 
-    public GameObject PullNote(NoteType noteType, GameObject noteLayer)
-    {
+    public GameObject PullNote(NoteType noteType, GameObject noteLayer) {
         GameObject note = null;
-        switch (noteType)
-        {
+        switch (noteType) {
             case NoteType.Touch:
                 note = touchNotePool[0];
                 touchNotePool.RemoveAt(0);
@@ -153,8 +147,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
         return null;
     }
 
-    public GameObject PullLongNoteDummy(GameObject noteLayer)
-    {
+    public GameObject PullLongNoteDummy(GameObject noteLayer) {
         GameObject note = longNoteDummyPool[0];
         longNoteDummyPool.RemoveAt(0);
         note.transform.SetParent(noteLayer.transform);
@@ -162,8 +155,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
         return note;
     }
 
-    public GameObject PullJudgementObject(GameObject judgementLayer)
-    {
+    public GameObject PullJudgementObject(GameObject judgementLayer) {
         GameObject judgementObj = null;
         judgementObj = judgementObjectPool[0];
         judgementObjectPool.RemoveAt(0);
@@ -172,32 +164,27 @@ public class GamePlayManager : Singleton<GamePlayManager>
         return judgementObj;
     }
 
-    public float GetScore()
-    {
+    public float GetScore() {
         return 920000f * ((float)perfectCount / maxNoteCount) + 522000f * ((float)normalCount / maxNoteCount) + GetComboScore();
     }
 
-    private int Sum(int n)
-    {
+    private int Sum(int n) {
         int result = 0;
         for (int i = 1; i <= n; i++)
             result += i;
         return result;
     }
 
-    private float GetComboScore()
-    {
+    private float GetComboScore() {
         float result = 0;
-        foreach (int count in comboCountList)
-        {
+        foreach (int count in comboCountList) {
             result += 80000 * ((float)Sum(count) / Sum(maxNoteCount));
         }
         result += 80000 * ((float)Sum(currentCombo) / Sum(maxNoteCount));
         return result;
     }
 
-    public static Rank GetRank(float score)
-    {
+    public static Rank GetRank(float score) {
         if (score >= 1000000) return Rank.AllPerfect;
         else if (score >= 950000) return Rank.S;
         else if (score >= 900000) return Rank.A;
@@ -207,8 +194,7 @@ public class GamePlayManager : Singleton<GamePlayManager>
     }
 }
 
-public enum Rank
-{
+public enum Rank {
     AllPerfect,
     S,
     A,

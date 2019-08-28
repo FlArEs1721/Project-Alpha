@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
-public class Note : MonoBehaviour
-{
+public class Note : MonoBehaviour {
     [HideInInspector]
     public GameFrame gameFrame;
 
@@ -58,13 +58,17 @@ public class Note : MonoBehaviour
     /// <summary>
     /// 노트 초기화 (생성 후 gameFrame 할당한 뒤 반드시 실행)
     /// </summary>
-    public void Initiate()
-    {
+    public void Initiate() {
         noteXSize = gameFrame.noteXSize;
         //noteYSize = (beatLength == 0) ? GameFrame.JudgementLineWidth : beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         noteYSize = GameFrame.JudgementLineWidth;
         yPosition = (5f + GamePlayManager.Instance.calibration) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         //yPosition = 800f;
+        //gameObject.GetComponent<SortingGroup>().sortingOrder = gameFrame.frameNumber;
+        foreach (var item in transform.GetComponentsInChildren<SpriteRenderer>()) {
+            item.sortingOrder = gameFrame.frameNumber + 1;
+        }
+        //gameObject.GetComponent<SpriteRenderer>().sortingOrder = gameFrame.frameNumber + 1;
         gameFrame.noteList.Add(this);
         isCreated = true;
     }
@@ -72,10 +76,9 @@ public class Note : MonoBehaviour
     /// <summary>
     /// 매 프레임마다 실행
     /// </summary>
-    private void Update()
-    {
-        if (isCreated)
-        {
+    private void Update() {
+        if (isCreated) {
+            /*
             // x좌표 & 크기 조정
             if (xPosition - (noteXSize / 2) < -(gameFrame.frameSize.x / 2) && xPosition + (noteXSize / 2) > (gameFrame.frameSize.x / 2))
             {
@@ -177,27 +180,33 @@ public class Note : MonoBehaviour
                 // 기존 크기 그대로 적용
                 this.transform.localScale = new Vector3(this.transform.localScale.x, noteYSize, 1);
             }
+            */
+
+            // 기존 위치 그대로 적용
+            this.transform.localPosition = new Vector3(xPosition, (yPosition > 0 ? yPosition : 0) + (noteYSize / 2), 0);
+            // 기존 크기 그대로 적용
+            this.transform.localScale = new Vector3(noteXSize, noteYSize, 1);
 
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             // 노트가 너무 내려갔을때 Miss로 처리하고 삭제
-            if (yPosition < (-0.25f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed))
-            {
+            if (yPosition < (-0.2f) * (GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed)) {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(this);
                 //Destroy(gameObject);
                 DisplayJudgement(JudgementType.Miss);
 
+                /*
                 if (dummyNote != null)
                 {
                     dummyNote.DeleteNote();
                 }
+                */
 
                 gameObject.SetActive(false);
             }
 
-            if (yPosition <= 0.5f && isProcessed)
-            {
+            if (yPosition <= 0.5f && isProcessed) {
                 gameFrame.noteList.Remove(this);
                 DisplayJudgement(JudgementType.Perfect);
                 gameObject.SetActive(false);
@@ -208,8 +217,7 @@ public class Note : MonoBehaviour
         }
     }
 
-    public JudgementType Judgement(NoteType noteType)
-    {
+    public JudgementType Judgement(NoteType noteType) {
         // 오차 시간 (ms 단위)
         float mistakeTime = Utility.GetMistakeTime(GamePlayManager.Instance.noteSpeed, yPosition);
 
@@ -222,8 +230,7 @@ public class Note : MonoBehaviour
         // x = 16분음표의 길이 시간 (ms 단위)
         float x = ((60 / bpm) / 4) * 1000;
 
-        switch (noteType)
-        {
+        switch (noteType) {
             case NoteType.Touch:
                 // 오차 시간이 (0.8)x 이하인 경우 Perfect
                 // 오차 시간이 (1.5)x 이하인 경우 Normal
@@ -267,8 +274,7 @@ public class Note : MonoBehaviour
         return JudgementType.Ignore;
     }
 
-    public JudgementType JudgementPerfect()
-    {
+    public JudgementType JudgementPerfect() {
         if (Mathf.Abs(yPosition) < 2) return JudgementType.Perfect;
         else return JudgementType.Ignore;
     }
@@ -288,24 +294,23 @@ public class Note : MonoBehaviour
     }
     */
 
-    public void DisplayJudgement(JudgementType judgement, float preTime = 0)
-    {
+    public void DisplayJudgement(JudgementType judgement, float preTime = 0) {
         GameObject judgementObj = GamePlayManager.Instance.PullJudgementObject(gameFrame.judgementLayer);
         judgementObj.transform.localEulerAngles = new Vector3(0, 0, 0);
-        switch (judgement)
-        {
+        switch (judgement) {
             case JudgementType.Perfect:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 135f / 255f, 1);
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 135f / 255f, 1, 0.85f);
                 break;
             case JudgementType.Good:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0);
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(0, 1, 0, 0.85f);
                 break;
             case JudgementType.Miss:
-                judgementObj.GetComponent<SpriteRenderer>().color = new Color(1, 51f / 255f, 0);
+                judgementObj.GetComponent<SpriteRenderer>().color = new Color(1, 51f / 255f, 0, 0.85f);
                 break;
         }
         judgementObj.transform.localScale = new Vector3(noteXSize, GameFrame.JudgementLineWidth, 1);
         judgementObj.transform.localPosition = new Vector3(xPosition, -(gameFrame.frameSize.y / 2) + (GameFrame.JudgementLineWidth / 2), 0);
+        judgementObj.GetComponent<JudgementObjectControl>().gameFrame = this.gameFrame;
         judgementObj.GetComponent<JudgementObjectControl>().Initialize();
     }
 }
@@ -313,8 +318,7 @@ public class Note : MonoBehaviour
 /// <summary>
 /// 노트 판정 종류
 /// </summary>
-public enum JudgementType
-{
+public enum JudgementType {
     /// <summary>
     /// Perfect 판정
     /// </summary>

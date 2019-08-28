@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JudgementObjectControl : MonoBehaviour
-{
+public class JudgementObjectControl : MonoBehaviour {
     [HideInInspector]
-    public bool isStarted = false;    
+    public bool isStarted = false;
+    [HideInInspector]
+    public GameFrame gameFrame;
 
     private SpriteRenderer spriteRenderer;
 
@@ -13,31 +14,26 @@ public class JudgementObjectControl : MonoBehaviour
 
     private const float LifeTime = 0.7f;
 
-    private void Awake()
-    {
+    private void Awake() {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
-    {
+    private void Update() {
         transform.localEulerAngles = new Vector3(0, 0, 0);
-        if (isStarted)
-        {
-            if (temp < LifeTime)
-            {
+        if (isStarted && Time.timeScale != 0) {
+            if (temp < LifeTime) {
                 spriteRenderer.color = Color.Lerp(spriteRenderer.color, Color.clear, temp / LifeTime);
 
                 temp += Time.deltaTime;
             }
-            else
-            {
-                //gameObject.SetActive(false);
+            else {
+                gameObject.SetActive(false);
             }
         }
     }
 
-    public void Initialize()
-    {
+    public void Initialize() {
+        gameObject.GetComponent<SpriteRenderer>().sortingOrder = gameFrame.frameNumber + 1;
         isStarted = true;
     }
 }

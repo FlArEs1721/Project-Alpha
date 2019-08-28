@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LongNoteDummy : MonoBehaviour
-{
+public class LongNoteDummy : MonoBehaviour {
     [HideInInspector]
     public GameFrame gameFrame;
 
@@ -25,18 +24,17 @@ public class LongNoteDummy : MonoBehaviour
     [HideInInspector]
     public bool isCreated = false;
 
-    public void Initiate()
-    {
+    public void Initiate() {
         noteXSize = gameFrame.noteXSize;
         noteYSize = beatLength * ((60 / GamePlayManager.Instance.bpm) / 8) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
         yPosition = (5f + GamePlayManager.Instance.calibration) * GamePlayManager.NoteSpeedConstant * GamePlayManager.Instance.noteSpeed;
+        gameObject.GetComponent<SpriteRenderer>().sortingOrder = gameFrame.frameNumber + 1;
         isCreated = true;
     }
 
-    private void Update()
-    {
-        if (isCreated)
-        {
+    private void Update() {
+        if (isCreated) {
+            /*
             // x좌표 & 크기 조정
             if (xPosition - (noteXSize / 2) < -(gameFrame.frameSize.x / 2) && xPosition + (noteXSize / 2) > (gameFrame.frameSize.x / 2))
             {
@@ -138,6 +136,12 @@ public class LongNoteDummy : MonoBehaviour
                 // 기존 크기 그대로 적용
                 this.transform.localScale = new Vector3(this.transform.localScale.x, noteYSize, 1);
             }
+            */
+
+            // 기존 위치 그대로 적용
+            this.transform.localPosition = new Vector3(xPosition, yPosition + (noteYSize / 2), 0);
+            // 기존 크기 그대로 적용
+            this.transform.localScale = new Vector3(noteXSize, noteYSize, 1);
 
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
@@ -146,12 +150,9 @@ public class LongNoteDummy : MonoBehaviour
         }
     }
 
-    public void DeleteNote()
-    {
-        foreach (Note note in mainNoteList)
-        {
-            if (note.gameObject.activeSelf)
-            {
+    public void DeleteNote() {
+        foreach (Note note in mainNoteList) {
+            if (note.gameObject.activeSelf) {
                 gameFrame.ProcessNote(JudgementType.Miss);
                 gameFrame.noteList.Remove(note);
                 note.gameObject.SetActive(false);
